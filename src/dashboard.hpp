@@ -1,10 +1,19 @@
-#include <QtWidgets>
+#include "window.hpp"
 
-class Dashboard : public QWidget
+/**
+ * The dashboard class
+ */
+class Dashboard : public Window
 {
+private:
+    /// Temporary example page contents
+    QLabel exampleContent;
 public:
     Dashboard()
+        : exampleContent("Page contents")
     {
-        setWindowTitle("Water Quality Inspector");
+        content.addWidget(&exampleContent);
+
+        finalise();
     }
 };

@@ -1,4 +1,0 @@
-/uolstore/home/users/sc23mv/uni/ui/UI-CWK/build/CMakeFiles/app.dir
-/uolstore/home/users/sc23mv/uni/ui/UI-CWK/build/CMakeFiles/edit_cache.dir
-/uolstore/home/users/sc23mv/uni/ui/UI-CWK/build/CMakeFiles/rebuild_cache.dir
-/uolstore/home/users/sc23mv/uni/ui/UI-CWK/build/CMakeFiles/app_autogen.dir
