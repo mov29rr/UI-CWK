@@ -5,6 +5,10 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QSqlRecord>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <thread>
 
 namespace database {
 
@@ -57,6 +61,19 @@ class Database {
 
   void initDatabase();
 
+  void reconnect();
+  inline QSqlQuery getQuery() { return QSqlQuery(m_db); };
+  inline void transaction() { m_db.transaction(); };
+  inline void commit() { m_db.commit(); };
+  inline void rollback() { m_db.rollback(); };
+
+  inline void close() {
+    // std::cout << "close" << std::endl;
+    if (m_db.isOpen()) {
+      m_db.close();
+    }
+  };
+
   /**
    * @brief Creates a new 'people' table if it doesn't already exist
    * @return true - 'people' table created successfully, false - table not
@@ -97,6 +114,9 @@ class Database {
   bool removeAllPersons();
 
  private:
+  void connect();
+
+  QString database_path;
   QSqlDatabase m_db;
   QSqlQuery m_query;
 };
