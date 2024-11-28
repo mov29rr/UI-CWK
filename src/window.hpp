@@ -30,7 +30,9 @@ public:
         for(auto page : pages)
         {
             pagesStack->addWidget(page);
-            pageSelector->addItem(page->title());
+
+            auto item = new QListWidgetItem(page->title());
+            pageSelector->addItem(item);
         }
 
         connect(pageSelector, &QListWidget::currentRowChanged,

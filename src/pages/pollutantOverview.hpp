@@ -5,13 +5,13 @@ class PollutantOverviewPage : public Page
 public:
     PollutantOverviewPage()
     {
-        // TODO: Use headers rather than labels
         auto layout = new QVBoxLayout;
         layout->setAlignment(Qt::AlignTop);
 
-        auto title = new QLabel(this->title());
-        layout->addWidget(title);
-        layout->setAlignment(title, Qt::AlignCenter);
+        auto header = new QLabel(title());
+        header->setObjectName("header");
+        layout->addWidget(header);
+        layout->setAlignment(header, Qt::AlignCenter);
 
         setLayout(layout);
     }
