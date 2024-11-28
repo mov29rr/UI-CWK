@@ -1,1 +1,9 @@
 build/
+
+**/**.csv
+
+**/**.o
+
+.vscode
+
+!.gitkeep
