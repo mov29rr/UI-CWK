@@ -1,53 +1,43 @@
-#include "navBar.hpp"
+#include "pages/pollutantOverview.hpp"
 
-/**
- * The window class
- */
-class Window : private QWidget
+class Window : public QWidget
 {
 private:
-    /// The window title
-    static constexpr const char* TITLE = "Water Quality Inspector";
     static constexpr int
-        WIDTH = 1200, ///< The window width
-        HEIGHT = 600; ///< The window height
-
-    /// The window navigation bar
-    NavBar _navBar;
-    /// The window page layout
-    QHBoxLayout _page;
-protected:
-    /// The window content, which derrived instances add to
-    QVBoxLayout content;
+        MIN_WIDTH = 600,
+        MIN_HEIGHT = 400,
+        SIDEBAR_MIN_WIDTH = 180,
+        SIDEBAR_STRETCH_PROPORTION = 1,
+        CONTENT_STRETCH_PROPORTION = 5;
 public:
-    /**
-     * Constructs a window
-     */
     Window()
     {
-        setWindowTitle(TITLE);
+        setMinimumWidth(MIN_WIDTH);
+        setMinimumHeight(MIN_HEIGHT);
 
-        content.setContentsMargins(0, 0, WIDTH, HEIGHT);
+        auto layout = new QHBoxLayout;
 
-        _page.addWidget(&_navBar);
-        _page.addLayout(&content);
-    }
+        auto pageSelector = new QListWidget;
+        auto pagesStack = new QStackedWidget;
 
-    /**
-     * Finalises the window layout
-     * 
-     * @remark Should only be called when all widgets have been added to the content.
-     */
-    void finalise()
-    {
-        setLayout(&_page);
-    }
+        pageSelector->setMinimumWidth(SIDEBAR_MIN_WIDTH);
 
-    /**
-     * Sets the window to be visible
-     */
-    void show()
-    {
-        QWidget::show();
+        const std::vector<Page*> pages
+        {
+            new PollutantOverviewPage,
+        };
+
+        for(auto page : pages)
+        {
+            pagesStack->addWidget(page);
+            pageSelector->addItem(page->title());
+        }
+
+        connect(pageSelector, &QListWidget::currentRowChanged,
+                pagesStack, &QStackedWidget::setCurrentIndex);
+
+        layout->addWidget(pageSelector, SIDEBAR_STRETCH_PROPORTION);
+        layout->addWidget(pagesStack, CONTENT_STRETCH_PROPORTION);
+        setLayout(layout);
     }
 };

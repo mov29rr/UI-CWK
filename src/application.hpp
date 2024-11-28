@@ -1,4 +1,4 @@
-#include "dashboard.hpp"
+#include "window.hpp"
 
 #include <memory>
 
@@ -7,13 +7,13 @@ class Application
 private:
     QApplication _handle;
 
-    std::unique_ptr<Dashboard> _dashboard;
+    std::unique_ptr<Window> _window;
 public:
     Application(int argc, char** argv)
         : _handle(argc, argv)
-        , _dashboard(std::make_unique<Dashboard>())
+        , _window(std::make_unique<Window>())
     {
-        _dashboard->show();
+        _window->show();
     }
 
     int exec()
