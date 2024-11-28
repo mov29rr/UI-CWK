@@ -1,5 +1,29 @@
+#body
+{
+    min-width: 600px;
+    min-height: 400px;
+}
+
 #header
 {
     font-size: 20px;
     font-weight: bold;
+}
+
+QListWidget#pageSelector
+{
+    min-width: 180px;
+    background: #0A97B0;
+    outline: none;
+}
+QListWidget#pageSelector::item
+{
+    height: 40px;
+    color: black;
+}
+QListWidget#pageSelector::item:selected
+{
+    background: #0A5EB0;
+    outline: none;
+    color: black;
 }
