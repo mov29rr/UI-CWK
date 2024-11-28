@@ -22,29 +22,16 @@ public:
         try
         {
             // Reading stylesheet from file
-            std::ifstream file(STYLE_SHEET_FILE_PATH);
-            std::stringstream contents;
-
-            if(file.is_open())
+            QFile file(STYLE_SHEET_FILE_PATH);
+            if(!file.exists())
             {
-                std::string buffer;
-
-                while(getline(file, buffer))
-                {
-                    contents << buffer;
-                }
-
-                file.close();
-
-                contents << '\0';
-            }
-            else
-            {
-                file.close();
                 throw std::runtime_error("Failed to open stylesheet");
             }
+            
+            file.open(QFile::ReadOnly);
+            auto contents = QLatin1String(file.readAll());
 
-            _handle->setStyleSheet(contents.str().c_str());
+            _handle->setStyleSheet(contents);
             
             _window->show();
         }
