@@ -1,49 +1,52 @@
-#include "pages/pollutantOverview.hpp"
+#pragma once
 
+#include "pages/pollutantOverview.hpp"
+#include "pages/persistentOrganicPollutants.hpp"
+
+/**
+ * The main window class
+ */
 class Window : public QWidget
 {
-private:
-    static constexpr int
-        SIDEBAR_STRETCH_PROPORTION = 1,
-        CONTENT_STRETCH_PROPORTION = 5;
 public:
+    /**
+     * Constructs the window
+     */
     Window()
     {
         setObjectName("body");
 
         auto layout = new QHBoxLayout;
 
-        auto pageSelector = new QListWidget;
-        auto pagesStack = new QStackedWidget;
+        auto sidebar = new QListWidget;
+        auto content = new QStackedWidget;
 
-        pageSelector->setObjectName("pageSelector");
+        sidebar->setObjectName("sidebar");
+        content->setObjectName("content");
 
         const std::vector<Page*> pages
         {
             new PollutantOverviewPage,
-            new PollutantOverviewPage,
-            new PollutantOverviewPage,
-            new PollutantOverviewPage,
-            new PollutantOverviewPage
+            new PersistentOrganicPollutantsPage
         };
 
         for(auto page : pages)
         {
-            pagesStack->addWidget(page);
-            auto item = new QListWidgetItem(page->title());
-            pageSelector->addItem(item);
+            content->addWidget(page);
+            auto item = new QListWidgetItem(page->title);
+            sidebar->addItem(item);
         }
 
         if(!pages.empty())
         {
-            pageSelector->setCurrentRow(0);
+            sidebar->setCurrentRow(0);
         }
 
-        connect(pageSelector, &QListWidget::currentRowChanged,
-                pagesStack, &QStackedWidget::setCurrentIndex);
+        connect(sidebar, &QListWidget::currentRowChanged,
+                content, &QStackedWidget::setCurrentIndex);
 
-        layout->addWidget(pageSelector, SIDEBAR_STRETCH_PROPORTION);
-        layout->addWidget(pagesStack, CONTENT_STRETCH_PROPORTION);
+        layout->addWidget(sidebar);
+        layout->addWidget(content, 1);
         layout->setContentsMargins(0, 0, 0, 0);
         setLayout(layout);
     }

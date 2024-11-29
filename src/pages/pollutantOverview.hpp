@@ -1,23 +1,15 @@
+#pragma once
+
 #include "page.hpp"
 
+/**
+ * The pollutant overview page
+ */
 class PollutantOverviewPage : public Page
 {
 public:
-    PollutantOverviewPage()
+    PollutantOverviewPage() : Page("Pollutant Overview Page")
     {
-        auto layout = new QVBoxLayout;
-        layout->setAlignment(Qt::AlignTop);
-
-        auto header = new QLabel(title());
-        header->setObjectName("header");
-        layout->addWidget(header);
-        layout->setAlignment(header, Qt::AlignCenter);
-
-        setLayout(layout);
-    }
-
-    const char* title() override
-    {
-        return "Pollutant Overview Page";
+        attachLayout();
     }
 };

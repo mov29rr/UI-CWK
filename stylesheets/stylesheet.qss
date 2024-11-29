@@ -10,18 +10,17 @@
     font-weight: bold;
 }
 
-QListWidget#pageSelector
+QListWidget#sidebar
 {
-    min-width: 180px;
     background: #0A97B0;
     outline: none;
 }
-QListWidget#pageSelector::item
+QListWidget#sidebar::item
 {
     height: 40px;
     color: black;
 }
-QListWidget#pageSelector::item:selected
+QListWidget#sidebar::item:selected
 {
     background: #0A5EB0;
     outline: none;
