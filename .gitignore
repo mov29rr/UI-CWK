@@ -1,9 +1,11 @@
 build/
 
 **/**.csv
+database/
 
 **/**.o
 
 .vscode
 
 !.gitkeep
+!*.zip
