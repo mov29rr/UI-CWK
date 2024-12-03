@@ -8,6 +8,9 @@
 class PollutantOverviewPage : public Page
 {
 public:
+    /**
+     * Constructs the pollutant overview page
+     */
     PollutantOverviewPage() : Page("Pollutant Overview Page")
     {
         attachLayout();
