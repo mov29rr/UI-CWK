@@ -12,6 +12,7 @@ struct Range
 #define RED 0xFF0000
 #define AMBER 0xFFB000
 #define GREEN 0x00FF00
+#define GREY 0x808080
 
 struct ComplianceLevels
 {
@@ -22,11 +23,6 @@ struct ComplianceLevels
         veryHigh;
 };
 
-qreal mean(qreal a, qreal b)
-{
-    return (a + b) / 2;
-}
-
 class ComplianceColouredChart : public QChart
 {
 private:
@@ -34,8 +30,6 @@ private:
     QLegend* _legend;
 
     QChartView* _view;
-
-    ComplianceLevels _complianceLevels;
 public:
     ComplianceColouredChart
         ( const QString& title
@@ -46,25 +40,38 @@ public:
     )
         : _title(title)
         , _legend(legend())
-        , _complianceLevels(std::move(complianceLevels))
     {
         _legend->hide();
         createDefaultAxes();
         setTitle(title);
 
         auto line = new QLineSeries;
-        std::vector<QScatterSeries*> pointScatters;
-        pointScatters.reserve(points.size());
 
-        const qreal range = yRange.max - yRange.min;
+        QScatterSeries
+            *lowPointScatter = new QScatterSeries,
+            *mediumPointScatter = new QScatterSeries,
+            *highPointScatter = new QScatterSeries;
 
         for(auto point : points)
         {
-            auto scatter = new QScatterSeries;
             *line << point;
-            *scatter << point;
-            pointScatters.push_back(scatter);
+
+            qreal height = point.y();
+            if(height <= complianceLevels.low)
+            {
+                *lowPointScatter << point; 
+            }
+            else if(complianceLevels.low <= height && height <= complianceLevels.high)
+            {
+                *mediumPointScatter << point;
+            }
+            else if(height >= complianceLevels.high)
+            {
+                *highPointScatter << point;
+            }
         }
+
+        const qreal range = yRange.max - yRange.min;
 
         auto xAxis = new QValueAxis;
         xAxis->setRange(xRange.min, xRange.max);
@@ -77,9 +84,9 @@ public:
         addAxis(yAxis, Qt::AlignLeft);
 
         auto gradient = new QLinearGradient(QPointF(0, 0), QPointF(0, 1));
-        gradient->setColorAt(_complianceLevels.veryHigh / range, RED);
-        gradient->setColorAt(mean(_complianceLevels.low, _complianceLevels.high) / range, AMBER);
-        gradient->setColorAt(_complianceLevels.veryLow / range, GREEN);
+        gradient->setColorAt(complianceLevels.veryHigh / range, RED);
+        gradient->setColorAt(mean(complianceLevels.low, complianceLevels.high) / range, AMBER);
+        gradient->setColorAt(complianceLevels.veryLow / range, GREEN);
 
         auto colourAxis = new QColorAxis;
         colourAxis->setRange(yRange.min, yRange.max);
@@ -92,14 +99,18 @@ public:
         line->attachAxis(xAxis);
         line->attachAxis(yAxis);
 
-        for(auto scatter : pointScatters)
-        {
-            addSeries(scatter);
-            auto point = scatter->points().first();
-            scatter->setColor(mapValueToColour(point.y()));
-            scatter->attachAxis(xAxis);
-            scatter->attachAxis(yAxis);
-        }
+        addSeries(lowPointScatter);
+        lowPointScatter->setColor(GREEN);
+        lowPointScatter->attachAxis(xAxis);
+        lowPointScatter->attachAxis(yAxis);
+        addSeries(mediumPointScatter);
+        mediumPointScatter->setColor(AMBER);
+        mediumPointScatter->attachAxis(xAxis);
+        mediumPointScatter->attachAxis(yAxis);
+        addSeries(highPointScatter);
+        highPointScatter->setColor(RED);
+        highPointScatter->attachAxis(xAxis);
+        highPointScatter->attachAxis(yAxis);
 
         _view = new QChartView(this);
         _view->setRenderHint(QPainter::Antialiasing);
@@ -107,23 +118,8 @@ public:
 
     inline QChartView* view() { return _view; }
 private:
-    int mapValueToColour(qreal value)
+    qreal mean(qreal a, qreal b)
     {
-        if(value <= _complianceLevels.low)
-        {
-            return GREEN;
-        }
-        else if(_complianceLevels.low <= value && value <= _complianceLevels.high)
-        {
-            return AMBER;
-        }
-        else if(value >= _complianceLevels.high)
-        {
-            return RED;
-        }
-        else
-        {
-            return 0;
-        }
+        return (a + b) / 2;
     }
 };
