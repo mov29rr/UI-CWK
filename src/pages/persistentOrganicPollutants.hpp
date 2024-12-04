@@ -31,7 +31,12 @@ public:
             , points
             , { 0, 20 }
             , { 0, 10 }
-            , std::vector<ComplianceColour> { { 0.0, 0x00FF00 }, { 0.5, 0xFFFF00 }, { 1.0, 0xFF0000 } }
+            , {
+                .veryLow = 2,
+                .low = 3,
+                .high = 6,
+                .veryHigh = 8
+            }
         );
 
         layout->addWidget(chart->view());
