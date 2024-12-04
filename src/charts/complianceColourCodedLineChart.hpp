@@ -9,11 +9,23 @@ struct Range
         max;
 };
 
-struct ComplianceColour
+#define RED 0xFF0000
+#define AMBER 0xFFB000
+#define GREEN 0x00FF00
+
+struct ComplianceLevels
 {
-    qreal value;
-    int colour;
+    qreal
+        veryLow,
+        low,
+        high,
+        veryHigh;
 };
+
+qreal mean(qreal a, qreal b)
+{
+    return (a + b) / 2;
+}
 
 class ComplianceColouredChart : public QChart
 {
@@ -22,16 +34,19 @@ private:
     QLegend* _legend;
 
     QChartView* _view;
+
+    ComplianceLevels _complianceLevels;
 public:
     ComplianceColouredChart
         ( const QString& title
         , const std::vector<QPointF>& points
         , Range xRange
         , Range yRange
-        , const std::vector<ComplianceColour>& complianceColourCodings
+        , ComplianceLevels complianceLevels
     )
         : _title(title)
         , _legend(legend())
+        , _complianceLevels(std::move(complianceLevels))
     {
         _legend->hide();
         createDefaultAxes();
@@ -40,6 +55,8 @@ public:
         auto line = new QLineSeries;
         std::vector<QScatterSeries*> pointScatters;
         pointScatters.reserve(points.size());
+
+        const qreal range = yRange.max - yRange.min;
 
         for(auto point : points)
         {
@@ -60,10 +77,9 @@ public:
         addAxis(yAxis, Qt::AlignLeft);
 
         auto gradient = new QLinearGradient(QPointF(0, 0), QPointF(0, 1));
-        for(auto colour : complianceColourCodings)
-        {
-            gradient->setColorAt(colour.value, colour.colour);
-        }
+        gradient->setColorAt(_complianceLevels.veryHigh / range, RED);
+        gradient->setColorAt(mean(_complianceLevels.low, _complianceLevels.high) / range, AMBER);
+        gradient->setColorAt(_complianceLevels.veryLow / range, GREEN);
 
         auto colourAxis = new QColorAxis;
         colourAxis->setRange(yRange.min, yRange.max);
@@ -93,17 +109,21 @@ public:
 private:
     int mapValueToColour(qreal value)
     {
-        if(value < 2)
+        if(value <= _complianceLevels.low)
         {
-            return 0x00FF00;
+            return GREEN;
         }
-        else if(value < 7)
+        else if(_complianceLevels.low <= value && value <= _complianceLevels.high)
         {
-            return 0xFF8000;
+            return AMBER;
+        }
+        else if(value >= _complianceLevels.high)
+        {
+            return RED;
         }
         else
         {
-            return 0xFF0000;
+            return 0;
         }
     }
 };
