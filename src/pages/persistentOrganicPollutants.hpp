@@ -28,7 +28,6 @@ public:
         points.emplace_back(18, 2);
         auto chart = new ComplianceColouredChart
             ( "Persistent Organig Pollutants"
-            , points
             , { 0, 20 }
             , { 0, 10 }
             , {
@@ -37,6 +36,7 @@ public:
                 .high = 6,
                 .veryHigh = 8
             }
+            , points
         );
 
         layout->addWidget(chart->view());
