@@ -11,8 +11,5 @@ public:
     /**
      * Constructs the pollutant overview page
      */
-    PollutantOverviewPage() : Page("Pollutant Overview Page")
-    {
-        attachLayout();
-    }
+    PollutantOverviewPage();
 };

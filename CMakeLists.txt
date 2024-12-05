@@ -7,10 +7,21 @@ set(CMAKE_CXX_STANDARD 20)
 find_package(Qt6 REQUIRED COMPONENTS Widgets Charts)
 qt_standard_project_setup()
 
-qt_add_executable(app
+set(SRC_FILES
 
     src/main.cpp
+    
+    src/core/application.cpp
+    src/core/window.cpp
+
+    src/pages/page.cpp
+    src/pages/persistentOrganicPollutants.cpp
+    src/pages/pollutantOverview.cpp
+
+    src/charts/complianceColourCodedLineGraph.cpp
 )
+
+qt_add_executable(app ${SRC_FILES})
 
 include_directories(app PUBLIC "${CMAKE_SOURCE_DIR}/src")
 
