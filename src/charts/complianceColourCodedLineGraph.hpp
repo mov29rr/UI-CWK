@@ -1,0 +1,111 @@
+#pragma once
+
+#include <QtCharts>
+
+#include <ranges>
+
+/**
+ * The range structure, stores minimum and maximum values
+ */
+struct Range
+{
+    qreal
+        min,
+        max;
+};
+
+#define RED 0xFF0000
+#define AMBER 0xFFB000
+#define GREEN 0x00FF00
+#define GREY 0x808080
+
+/**
+ * The compliance levels structure
+ */
+struct ComplianceLevels
+{
+    qreal
+        veryLow,    ///< Very low compliance level 
+        low,        ///< Low compliance level
+        high,       ///< High compliance level
+        veryHigh;   ///< Very high compliance level
+};
+
+/**
+ * The compliance colour coded line graph chart class
+ */
+class ComplianceColourCodedLineGraph : public QChart
+{
+private:
+    QChartView* _view;
+
+    QValueAxis
+        *_xAxis,
+        *_yAxis;
+    QColorAxis* _colourAxis;
+
+    QLineSeries* _line;
+    QScatterSeries
+        *_lowPointScatter,
+        *_mediumPointScatter,
+        *_highPointScatter;
+
+    ComplianceLevels _complianceLevels;
+public:
+    /**
+     * Constructs the graph
+     * 
+     * @param title the graph title.
+     * @param xRange the x-axis range.
+     * @param yRange the y-axis range.
+     * @param complianceLevels the compliance levels.
+     * @param points the points to add to the graph (optional, can add later using ComplianceColourCodedLineGraph::addPoints).
+     */
+    ComplianceColourCodedLineGraph
+        ( const QString& title
+        , Range xRange
+        , Range yRange
+        , ComplianceLevels complianceLevels
+        , const std::vector<QPointF>& points
+    );
+
+    /**
+     * Returns a pointer to the chart view
+     * 
+     * @return A mutable pointer to the chart view.
+     */
+    inline QChartView* view() { return _view; }
+    /**
+     * Returns a pointer to the chart view
+     * 
+     * @return A non-mutable pointer to the chart view.
+     */
+    inline const QChartView* view() const { return _view; }
+
+    /**
+     * Sets the x-axis range.
+     * 
+     * @param range the x-axis range to set to.
+     */
+    void setXAxisRange(Range range);
+    /**
+     * Sets the y-axis range.
+     * 
+     * @param range the y-axis range to set to.
+     */
+    void setYAxisRange(Range range);
+    /**
+     * Sets the x and y axis range.
+     * 
+     * @param xRange the x-axis range.
+     * @param yRange the y-axis range.
+     */
+    void setAxesRange(Range xRange, Range yRange);
+
+    /**
+     * Adds points to the graph
+     * 
+     * @param points the points to add to the graph.
+     */
+    void addPoints(const std::vector<QPointF>& points);
+};

@@ -19,23 +19,10 @@ protected:
      * 
      * @param title the page title.
      */
-    Page(const char* title)
-        : title(title)
-        , layout(new QVBoxLayout)
-    {
-        layout->setAlignment(Qt::AlignTop);
-
-        auto header = new QLabel(title);
-        header->setObjectName("header");
-        layout->addWidget(header);
-        layout->setAlignment(header, Qt::AlignCenter);
-    }
+    Page(const char* title);
 
     /**
      * Attaches a layout to the page
      */
-    void attachLayout()
-    {
-        setLayout(layout);
-    }
+    void attachLayout();
 };
