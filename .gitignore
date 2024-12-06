@@ -6,6 +6,7 @@ database/*
 **/**.o
 
 .vscode
+.DS_Store
 
 !.gitkeep
 !*.zip
