@@ -1,7 +1,46 @@
 #include "persistentOrganicPollutants.hpp"
 
+#include "core/dbConnection.hpp"
+
 PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage() : Page("Persistent Organic Pollutants")
 {
+    DbConnection db("../database/database.sqlite");
+    auto records = db.query
+    (
+        "SELECT DISTINCT id, label FROM determinand "
+        "WHERE label LIKE \"PCB %\" "
+        "LIMIT 100"
+    );
+
+    for(auto record : records)
+    {
+        _pcbIdentifiers.emplace_back
+            ( record.field("id").value().toInt()
+            , record.field("label").value().toString().toStdString()
+        );
+    }
+
+    auto pcb = _pcbIdentifiers.front();
+
+    records = db.query
+    (
+        "SELECT result FROM measurement "
+        "WHERE determinand_id = :id "
+        "LIMIT 100",
+        [&pcb](QSqlQuery& query)
+        {
+            query.bindValue(":id", pcb.id);
+        }
+    );
+
+    for(auto record : records)
+    {
+        std::cout
+            << record.field("result").value().toReal()
+            << record.field("units").value().toString().toStdString()
+            << std::endl;
+    }
+
     std::vector<QPointF> points;
     points.emplace_back(0, 6);
     points.emplace_back(2, 4);
