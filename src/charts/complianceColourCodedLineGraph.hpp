@@ -16,6 +16,11 @@ struct Range
 
 /**
  * The compliance levels structure
+ * 
+ * The <low> and <high> regions segment the middle region, from the <low> and <high> regions.
+ * The <veryLow> value determines the strongest green value on the colour gradient.
+ * The <veryHigh> value determines the strongest red value on the colour gradient.
+ * While the strongest amber colour value is marked at the midpoint between the low and high value.
  */
 struct ComplianceLevels
 {
