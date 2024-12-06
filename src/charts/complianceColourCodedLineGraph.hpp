@@ -14,11 +14,6 @@ struct Range
         max;
 };
 
-#define RED 0xFF0000
-#define AMBER 0xFFB000
-#define GREEN 0x00FF00
-#define GREY 0x808080
-
 /**
  * The compliance levels structure
  */
@@ -63,6 +58,8 @@ public:
      */
     ComplianceColourCodedLineGraph
         ( const QString& title
+        , const QString& xTitle
+        , const QString& yTitle
         , Range xRange
         , Range yRange
         , ComplianceLevels complianceLevels

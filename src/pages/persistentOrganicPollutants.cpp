@@ -15,6 +15,8 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage() : Page("Persi
     points.emplace_back(18, 2);
     auto chart = new ComplianceColourCodedLineGraph
         ( "Persistent Organig Pollutants"
+        , "x-axis"
+        , "y-axis"
         , { 0, 20 }
         , { 0, 10 }
         , {
