@@ -1,7 +1,7 @@
 build/
 
 **/**.csv
-database/
+database/*
 
 **/**.o
 
