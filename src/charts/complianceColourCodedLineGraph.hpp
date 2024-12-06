@@ -34,8 +34,14 @@ struct ComplianceLevels
 /**
  * The compliance colour coded line graph chart class
  */
-class ComplianceColourCodedLineGraph : public QChart
+class PollutantContaminationGraph : public QChart
 {
+public:
+    struct Point
+    {
+        QDateTime dateTime;
+        qreal concentration;
+    };
 private:
     QChartView* _view;
 
@@ -59,16 +65,14 @@ public:
      * @param xRange the x-axis range.
      * @param yRange the y-axis range.
      * @param complianceLevels the compliance levels.
-     * @param points the points to add to the graph (optional, can add later using ComplianceColourCodedLineGraph::addPoints).
+     * @param points the point data to add to the graph (optional, can add later using PollutantContaminationGraph::addPoints).
      */
-    ComplianceColourCodedLineGraph
+    PollutantContaminationGraph
         ( const QString& title
-        , const QString& xTitle
-        , const QString& yTitle
         , Range xRange
         , Range yRange
         , ComplianceLevels complianceLevels
-        , const std::vector<QPointF>& points
+        , const std::vector<Point>& points = {}
     );
 
     /**
@@ -109,5 +113,5 @@ public:
      * 
      * @param points the points to add to the graph.
      */
-    void addPoints(const std::vector<QPointF>& points);
+    void addPoints(const std::vector<Point>& points);
 };

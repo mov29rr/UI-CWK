@@ -14,12 +14,14 @@ struct PcbDeterminand
     /// The PCB ID
     int id;
     /// The PCB name
-    std::string name;
+    QString name;
+    /// The PCB concentration units
+    QString units;
 };
 
 struct PcbMeasurement
 {
-    QDateTime dateTime;
+    QDateTime date;
     qreal concentration;
 };
 

@@ -16,7 +16,8 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage() : Page("Persi
     {
         _pcbIdentifiers.emplace_back
             ( record.field("id").value().toInt()
-            , record.field("label").value().toString().toStdString()
+            , record.field("label").value().toString()
+            , record.field("unit").value().toString()
         );
     }
 
@@ -24,7 +25,7 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage() : Page("Persi
 
     records = db.query
     (
-        "SELECT result FROM measurement "
+        "SELECT result, date FROM measurement "
         "WHERE determinand_id = :id "
         "LIMIT 100",
         [&pcb](QSqlQuery& query)
@@ -33,29 +34,18 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage() : Page("Persi
         }
     );
 
+    std::vector<PollutantContaminationGraph::Point> measurements;
+    int i = 0;
     for(auto record : records)
     {
-        std::cout
-            << record.field("result").value().toReal()
-            << record.field("units").value().toString().toStdString()
-            << std::endl;
+        measurements.emplace_back
+            ( record.field("date").value().toDateTime()
+            , record.field("result").value().toReal()
+        );
     }
 
-    std::vector<QPointF> points;
-    points.emplace_back(0, 6);
-    points.emplace_back(2, 4);
-    points.emplace_back(4, 8);
-    points.emplace_back(6, 4);
-    points.emplace_back(8, 5);
-    points.emplace_back(10, 1);
-    points.emplace_back(12, 3);
-    points.emplace_back(14, 6);
-    points.emplace_back(16, 3);
-    points.emplace_back(18, 2);
-    auto chart = new ComplianceColourCodedLineGraph
+    auto chart = new PollutantContaminationGraph
         ( "Persistent Organig Pollutants"
-        , "x-axis"
-        , "y-axis"
         , { 0, 20 }
         , { 0, 10 }
         , {
@@ -64,7 +54,7 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage() : Page("Persi
             .high = 6,
             .veryHigh = 8
         }
-        , points
+        , measurements
     );
 
     layout->addWidget(chart->view());

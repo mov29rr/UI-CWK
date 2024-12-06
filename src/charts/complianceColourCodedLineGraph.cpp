@@ -7,14 +7,12 @@
 
 qreal mean(qreal a, qreal b) { return (a + b) / 2; }
 
-ComplianceColourCodedLineGraph::ComplianceColourCodedLineGraph
+PollutantContaminationGraph::PollutantContaminationGraph
     ( const QString& title
-    , const QString& xTitle
-    , const QString& yTitle
     , Range xRange
     , Range yRange
     , ComplianceLevels complianceLevels
-    , const std::vector<QPointF>& points = {}
+    , const std::vector<Point>& points
 )
     : _xAxis(new QValueAxis)
     , _yAxis(new QValueAxis)
@@ -32,12 +30,12 @@ ComplianceColourCodedLineGraph::ComplianceColourCodedLineGraph
     legend->hide();
 
     // Adding the axes
-    _xAxis->setLabelFormat("%i");
-    _xAxis->setTitleText(xTitle);
+    _xAxis->setLabelFormat("MM YYYY");
+    _xAxis->setTitleText("Time");
     addAxis(_xAxis, Qt::AlignBottom);
 
-    _yAxis->setLabelFormat("%i");
-    _yAxis->setTitleText(yTitle);
+    _yAxis->setLabelFormat("%f");
+    _yAxis->setTitleText("Concentration");
     addAxis(_yAxis, Qt::AlignLeft);
 
     // Adding the points to the series
@@ -119,39 +117,38 @@ ComplianceColourCodedLineGraph::ComplianceColourCodedLineGraph
     _view->setRenderHint(QPainter::Antialiasing);
 }
 
-void ComplianceColourCodedLineGraph::setXAxisRange(Range range)
+void PollutantContaminationGraph::setXAxisRange(Range range)
 {
     _xAxis->setRange(range.min, range.max);
 }
-void ComplianceColourCodedLineGraph::setYAxisRange(Range range)
+void PollutantContaminationGraph::setYAxisRange(Range range)
 {
     _yAxis->setRange(range.min, range.max);
     _colourAxis->setRange(range.min, range.max);
 }
-void ComplianceColourCodedLineGraph::setAxesRange(Range xRange, Range yRange)
+void PollutantContaminationGraph::setAxesRange(Range xRange, Range yRange)
 {
     setXAxisRange(xRange);
     setYAxisRange(yRange);
 }
 
-void ComplianceColourCodedLineGraph::addPoints(const std::vector<QPointF>& points)
+void PollutantContaminationGraph::addPoints(const std::vector<Point>& points)
 {
     for(auto point : points)
     {
-        *_line << point;
+        _line->append(point.dateTime.toMSecsSinceEpoch(), point.concentration);
 
-        qreal height = point.y();
-        if(height <= _complianceLevels.low)
+        if(point.concentration <= _complianceLevels.low)
         {
-            *_lowPointScatter << point; 
+            _lowPointScatter->append(point.dateTime.toMSecsSinceEpoch(), point.concentration);
         }
-        else if(_complianceLevels.low <= height && height <= _complianceLevels.high)
+        else if(_complianceLevels.low <= point.concentration && point.concentration <= _complianceLevels.high)
         {
-            *_mediumPointScatter << point;
+            _mediumPointScatter->append(point.dateTime.toMSecsSinceEpoch(), point.concentration);
         }
-        else if(height >= _complianceLevels.high)
+        else if(point.concentration >= _complianceLevels.high)
         {
-            *_highPointScatter << point;
+            _highPointScatter->append(point.dateTime.toMSecsSinceEpoch(), point.concentration);
         }
     }
 }
