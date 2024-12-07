@@ -10,7 +10,7 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage()
         "WHERE LABEL LIKE \"PCB %\""
     );
 
-    for(auto record : records)
+    for(const auto& record : records)
     {
         _pcbs.emplace_back
             ( record.field("ID").value().toInt()
@@ -95,7 +95,8 @@ void PersistentOrganicPollutantsPage::updateGraph()
         ( "Persistent Organic Pollutants"
         , { startDate, endDate }
         , { 0, 30 }
-        , {
+        , ComplianceLevels
+        {
             .veryLow = 2,
             .low = 3,
             .high = 6,

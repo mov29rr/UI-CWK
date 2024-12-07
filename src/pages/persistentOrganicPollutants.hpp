@@ -33,9 +33,6 @@ private:
 
     std::unique_ptr<PollutantContaminationGraph> _graph;
 
-    // TODO: Caching system
-    std::unordered_map<PcbDeterminand*, std::unique_ptr<PollutantContaminationGraph::Point>> _graphs;
-
     QComboBox* _pcbSelector;
     QDateEdit
         *_startDateSelector,
