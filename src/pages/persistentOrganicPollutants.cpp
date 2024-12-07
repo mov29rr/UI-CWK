@@ -1,6 +1,6 @@
 #include "persistentOrganicPollutants.hpp"
 
-#include "core/dbConnection.hpp"
+#include "database/dbConnection.hpp"
 
 PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage() : Page("Persistent Organic Pollutants")
 {
@@ -8,13 +8,12 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage() : Page("Persi
     auto records = db.query
     (
         "SELECT DISTINCT id, label FROM determinand "
-        "WHERE label LIKE \"PCB %\" "
-        "LIMIT 100"
+        "WHERE label LIKE \"PCB %\""
     );
 
     for(auto record : records)
     {
-        _pcbIdentifiers.emplace_back
+        _pcbs.emplace_back
             ( record.field("id").value().toInt()
             , record.field("label").value().toString()
             , record.field("unit").value().toString()
@@ -22,7 +21,7 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage() : Page("Persi
     }
 
     // TODO: Select PCB
-    auto pcb = _pcbIdentifiers.front();
+    auto pcb = _pcbs.front();
 
     // TODO: Select time frame, max points
 
@@ -47,7 +46,6 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage() : Page("Persi
     );
 
     std::vector<PollutantContaminationGraph::Point> measurements;
-    int i = 0;
     for(auto record : records)
     {
         measurements.emplace_back
@@ -55,7 +53,6 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage() : Page("Persi
             , record.field("result").value().toReal()
         );
     }
-    std::cout << pcb.name.toStdString() << std::endl;
 
     auto chart = new PollutantContaminationGraph
         ( "Persistent Organig Pollutants"

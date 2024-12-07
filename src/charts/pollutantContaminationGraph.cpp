@@ -128,7 +128,7 @@ void PollutantContaminationGraph::addPoints(const std::vector<Point>& points)
 {
     for(auto point : points)
     {
-        qint64 msSinceEpoch = point.dateTime.toMSecsSinceEpoch();
+        qint64 msSinceEpoch = point.time.toMSecsSinceEpoch();
 
         _line->append(msSinceEpoch, point.concentration);
 

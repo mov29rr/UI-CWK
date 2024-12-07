@@ -4,6 +4,8 @@
 
 #include "charts/pollutantContaminationGraph.hpp"
 
+#include <unordered_map>
+
 /**
  * The PCB determinand structure.
  * 
@@ -19,19 +21,15 @@ struct PcbDeterminand
     QString units;
 };
 
-struct PcbMeasurement
-{
-    QDateTime date;
-    qreal concentration;
-};
-
 /**
  * The persistent organic pollutants page class.
  */
 class PersistentOrganicPollutantsPage : public Page
 {
 private:
-    std::vector<PcbDeterminand> _pcbIdentifiers;
+    std::vector<PcbDeterminand> _pcbs;
+    // TODO: Caching system
+    std::unordered_map<PcbDeterminand*, std::unique_ptr<std::vector<PollutantContaminationGraph::Point>>> _pcbMeasurements;
 public:
     /**
      * Constructs the persistent organic pollutants page.

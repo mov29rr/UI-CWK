@@ -100,7 +100,7 @@ public:
      * 
      * @param range the x-axis time range to set to.
      */
-    void setConcentrationRange(Range<QDateTime> range);
+    void setTimeRange(Range<QDateTime> range);
     /**
      * Sets the y-axis concentration range.
      * 
