@@ -1,4 +1,4 @@
-#include "complianceColourCodedLineGraph.hpp"
+#include "pollutantContaminationGraph.hpp"
 
 #define RED 0xFF0000
 #define AMBER 0xFFB000
@@ -9,8 +9,8 @@ qreal mean(qreal a, qreal b) { return (a + b) / 2; }
 
 PollutantContaminationGraph::PollutantContaminationGraph
     ( const QString& title
-    , Range<QDateTime> xRange
-    , Range<qreal> yRange
+    , Range<QDateTime> timeRange
+    , Range<qreal> concentrationRange
     , ComplianceLevels complianceLevels
     , const std::vector<Point>& points
 )
@@ -41,7 +41,7 @@ PollutantContaminationGraph::PollutantContaminationGraph
     addPoints(points);
 
     // Adding the colour gradient axis
-    const qreal range = yRange.max - yRange.min;
+    const qreal range = concentrationRange.max - concentrationRange.min;
 
     auto gradient = new QLinearGradient(QPointF(0, 0), QPointF(0, 1));
     gradient->setColorAt(_complianceLevels.veryHigh / range, RED);
@@ -53,8 +53,8 @@ PollutantContaminationGraph::PollutantContaminationGraph
     _colourAxis->setTickCount(2);
     addAxis(_colourAxis, Qt::AlignRight);
 
-    setXAxisRange(xRange);
-    setYAxisRange(yRange);
+    setTimeRange(timeRange);
+    setConcentrationRange(concentrationRange);
 
     // Adding the compliance regions
     QColor
@@ -70,10 +70,10 @@ PollutantContaminationGraph::PollutantContaminationGraph
         *lowLine = new QLineSeries,
         *highLine = new QLineSeries,
         *topLine = new QLineSeries;
-    *bottomLine << QPointF(0, yRange.min) << QPointF(1, yRange.min);
+    *bottomLine << QPointF(0, concentrationRange.min) << QPointF(1, concentrationRange.min);
     *lowLine << QPointF(0, _complianceLevels.low) << QPointF(1, _complianceLevels.low);
     *highLine << QPointF(0, _complianceLevels.high) << QPointF(1, _complianceLevels.high);
-    *topLine << QPointF(0, yRange.max) << QPointF(1, yRange.max);
+    *topLine << QPointF(0, concentrationRange.max) << QPointF(1, concentrationRange.max);
 
     QAreaSeries
         *lowArea = new QAreaSeries(bottomLine, lowLine),
@@ -114,11 +114,11 @@ PollutantContaminationGraph::PollutantContaminationGraph
     _view->setRenderHint(QPainter::Antialiasing);
 }
 
-void PollutantContaminationGraph::setXAxisRange(Range<QDateTime> range)
+void PollutantContaminationGraph::setTimeRange(Range<QDateTime> range)
 {
     _xAxis->setRange(range.min, range.max);
 }
-void PollutantContaminationGraph::setYAxisRange(Range<qreal> range)
+void PollutantContaminationGraph::setConcentrationRange(Range<qreal> range)
 {
     _yAxis->setRange(range.min, range.max);
     _colourAxis->setRange(range.min, range.max);
@@ -128,19 +128,21 @@ void PollutantContaminationGraph::addPoints(const std::vector<Point>& points)
 {
     for(auto point : points)
     {
-        _line->append(point.dateTime.toMSecsSinceEpoch(), point.concentration);
+        qint64 msSinceEpoch = point.dateTime.toMSecsSinceEpoch();
+
+        _line->append(msSinceEpoch, point.concentration);
 
         if(point.concentration <= _complianceLevels.low)
         {
-            _lowPointScatter->append(point.dateTime.toMSecsSinceEpoch(), point.concentration);
+            _lowPointScatter->append(msSinceEpoch, point.concentration);
         }
         else if(_complianceLevels.low <= point.concentration && point.concentration <= _complianceLevels.high)
         {
-            _mediumPointScatter->append(point.dateTime.toMSecsSinceEpoch(), point.concentration);
+            _mediumPointScatter->append(msSinceEpoch, point.concentration);
         }
         else if(point.concentration >= _complianceLevels.high)
         {
-            _highPointScatter->append(point.dateTime.toMSecsSinceEpoch(), point.concentration);
+            _highPointScatter->append(msSinceEpoch, point.concentration);
         }
     }
 }

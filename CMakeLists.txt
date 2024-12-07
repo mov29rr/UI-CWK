@@ -21,7 +21,7 @@ set(SRC_FILES
     src/pages/persistentOrganicPollutants.cpp
     src/pages/pollutantOverview.cpp
 
-    src/charts/complianceColourCodedLineGraph.cpp
+    src/charts/pollutantContaminationGraph.cpp
 )
 
 qt_add_executable(app ${SRC_FILES})

@@ -2,7 +2,7 @@
 
 #include "page.hpp"
 
-#include "charts/complianceColourCodedLineGraph.hpp"
+#include "charts/pollutantContaminationGraph.hpp"
 
 /**
  * The PCB determinand structure.
