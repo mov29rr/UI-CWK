@@ -3,6 +3,7 @@
 #include "page.hpp"
 
 #include "charts/pollutantContaminationGraph.hpp"
+#include "database/dbConnection.hpp"
 
 #include <unordered_map>
 
@@ -27,6 +28,7 @@ struct PcbDeterminand
 class PersistentOrganicPollutantsPage : public Page
 {
 private:
+    DbConnection _db;
     std::vector<PcbDeterminand> _pcbs;
     // TODO: Caching system
     std::unordered_map<PcbDeterminand*, std::unique_ptr<std::vector<PollutantContaminationGraph::Point>>> _pcbMeasurements;

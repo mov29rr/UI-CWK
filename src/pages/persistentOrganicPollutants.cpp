@@ -1,22 +1,21 @@
 #include "persistentOrganicPollutants.hpp"
 
-#include "database/dbConnection.hpp"
-
-PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage() : Page("Persistent Organic Pollutants")
+PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage()
+    : Page("Persistent Organic Pollutants")
+    , _db("../database/database.sqlite")
 {
-    DbConnection db("../database/database.sqlite");
-    auto records = db.query
+    auto records = _db.query
     (
         "SELECT DISTINCT id, label FROM determinand "
-        "WHERE label LIKE \"PCB %\""
+        "WHERE LABEL LIKE \"PCB %\""
     );
 
     for(auto record : records)
     {
         _pcbs.emplace_back
-            ( record.field("id").value().toInt()
-            , record.field("label").value().toString()
-            , record.field("unit").value().toString()
+            ( record.field("ID").value().toInt()
+            , record.field("LABEL").value().toString()
+            , record.field("UNIT").value().toString()
         );
     }
 
@@ -29,19 +28,19 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage() : Page("Persi
         startDate(QDate(2024, 1, 1), QTime(0, 0, 0)),
         endDate(QDate(2025, 1, 1), QTime(0, 0, 0));
 
-    records = db.query
+    records = _db.query
     (
-        "SELECT result, date FROM measurement "
-        "WHERE determinand_id = :id "
-        "AND date BETWEEN :startDate AND :endDate "
-        "ORDER BY date ASC "
-        "LIMIT :maxPoints ",
-        [&pcb](QSqlQuery& query)
+        "SELECT RESULT, DATE FROM measurement "
+        "WHERE DETERMINAND_ID = :id "
+        "AND DATE BETWEEN :startDate AND :endDate "
+        "ORDER BY DATE ASC "
+        "LIMIT :maxMeasurements"
+        , std::vector<Binding>
         {
-            query.bindValue(":id", pcb.id);
-            query.bindValue(":startDate", QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0)));
-            query.bindValue(":endDate", QDateTime(QDate(2025, 1, 1), QTime(0, 0, 0)));
-            query.bindValue(":maxPoints", 100);
+            { ":id", pcb.id },
+            { ":startDate", QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0)) },
+            { ":endDate", QDateTime(QDate(2025, 1, 1), QTime(0, 0, 0)) },
+            { ":maxMeasurements", 100 }
         }
     );
 

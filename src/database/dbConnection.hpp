@@ -9,6 +9,12 @@
 #include <functional>
 #include <cassert>
 
+struct Binding
+{
+    QString fieldName;
+    QVariant value;
+};
+
 class DbConnection
 {
 private:
@@ -24,12 +30,15 @@ public:
         }
     }
 
-    std::vector<QSqlRecord> query(const QString& queryString, std::function<void(QSqlQuery&)> preQuery = [](QSqlQuery&){})
+    std::vector<QSqlRecord> query(const QString& queryString, const std::vector<Binding>& bindings = {})
     {
         QSqlQuery query(_connection);
         query.prepare(queryString);
-
-        preQuery(query);
+        
+        for(const Binding& binding : bindings)
+        {
+            query.bindValue(binding.fieldName, binding.value);
+        }
 
         assert(query.exec() && "Failed to query database");
         
