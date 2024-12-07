@@ -6,10 +6,13 @@
 
 /**
  * The range structure, stores minimum and maximum values
+ * 
+ * @tparam T the value for the range
  */
+template<typename T>
 struct Range
 {
-    qreal
+    T
         min,
         max;
 };
@@ -45,9 +48,8 @@ public:
 private:
     QChartView* _view;
 
-    QValueAxis
-        *_xAxis,
-        *_yAxis;
+    QDateTimeAxis* _xAxis;
+    QValueAxis* _yAxis;
     QColorAxis* _colourAxis;
 
     QLineSeries* _line;
@@ -62,15 +64,15 @@ public:
      * Constructs the graph
      * 
      * @param title the graph title.
-     * @param xRange the x-axis range.
-     * @param yRange the y-axis range.
+     * @param xRange the x-axis time range.
+     * @param yRange the y-axis concentration range.
      * @param complianceLevels the compliance levels.
      * @param points the point data to add to the graph (optional, can add later using PollutantContaminationGraph::addPoints).
      */
     PollutantContaminationGraph
         ( const QString& title
-        , Range xRange
-        , Range yRange
+        , Range<QDateTime> xRange
+        , Range<qreal> yRange
         , ComplianceLevels complianceLevels
         , const std::vector<Point>& points = {}
     );
@@ -93,20 +95,13 @@ public:
      * 
      * @param range the x-axis range to set to.
      */
-    void setXAxisRange(Range range);
+    void setXAxisRange(Range<QDateTime> range);
     /**
      * Sets the y-axis range.
      * 
      * @param range the y-axis range to set to.
      */
-    void setYAxisRange(Range range);
-    /**
-     * Sets the x and y axis range.
-     * 
-     * @param xRange the x-axis range.
-     * @param yRange the y-axis range.
-     */
-    void setAxesRange(Range xRange, Range yRange);
+    void setYAxisRange(Range<qreal> range);
 
     /**
      * Adds points to the graph

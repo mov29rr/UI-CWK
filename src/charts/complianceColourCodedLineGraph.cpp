@@ -9,12 +9,12 @@ qreal mean(qreal a, qreal b) { return (a + b) / 2; }
 
 PollutantContaminationGraph::PollutantContaminationGraph
     ( const QString& title
-    , Range xRange
-    , Range yRange
+    , Range<QDateTime> xRange
+    , Range<qreal> yRange
     , ComplianceLevels complianceLevels
     , const std::vector<Point>& points
 )
-    : _xAxis(new QValueAxis)
+    : _xAxis(new QDateTimeAxis)
     , _yAxis(new QValueAxis)
     , _colourAxis(new QColorAxis)
     , _line(new QLineSeries)
@@ -30,7 +30,6 @@ PollutantContaminationGraph::PollutantContaminationGraph
     legend->hide();
 
     // Adding the axes
-    _xAxis->setLabelFormat("MM YYYY");
     _xAxis->setTitleText("Time");
     addAxis(_xAxis, Qt::AlignBottom);
 
@@ -54,7 +53,8 @@ PollutantContaminationGraph::PollutantContaminationGraph
     _colourAxis->setTickCount(2);
     addAxis(_colourAxis, Qt::AlignRight);
 
-    setAxesRange(xRange, yRange);
+    setXAxisRange(xRange);
+    setYAxisRange(yRange);
 
     // Adding the compliance regions
     QColor
@@ -70,10 +70,10 @@ PollutantContaminationGraph::PollutantContaminationGraph
         *lowLine = new QLineSeries,
         *highLine = new QLineSeries,
         *topLine = new QLineSeries;
-    *bottomLine << QPointF(xRange.min, yRange.min) << QPointF(xRange.max, yRange.min);
-    *lowLine << QPointF(xRange.min, _complianceLevels.low) << QPointF(xRange.max, _complianceLevels.low);
-    *highLine << QPointF(xRange.min, _complianceLevels.high) << QPointF(xRange.max, _complianceLevels.high);
-    *topLine << QPointF(xRange.min, yRange.max) << QPointF(xRange.max, yRange.max);
+    *bottomLine << QPointF(0, yRange.min) << QPointF(1, yRange.min);
+    *lowLine << QPointF(0, _complianceLevels.low) << QPointF(1, _complianceLevels.low);
+    *highLine << QPointF(0, _complianceLevels.high) << QPointF(1, _complianceLevels.high);
+    *topLine << QPointF(0, yRange.max) << QPointF(1, yRange.max);
 
     QAreaSeries
         *lowArea = new QAreaSeries(bottomLine, lowLine),
@@ -81,15 +81,12 @@ PollutantContaminationGraph::PollutantContaminationGraph
         *highArea = new QAreaSeries(highLine, topLine);
 
     addSeries(lowArea);
-    lowArea->attachAxis(_xAxis);
     lowArea->attachAxis(_yAxis);
     lowArea->setColor(lowRegionColour);
     addSeries(midArea);
-    midArea->attachAxis(_xAxis);
     midArea->attachAxis(_yAxis);
     midArea->setColor(midRegionColour);
     addSeries(highArea);
-    highArea->attachAxis(_xAxis);
     highArea->attachAxis(_yAxis);
     highArea->setColor(highRegionColour);
 
@@ -117,19 +114,14 @@ PollutantContaminationGraph::PollutantContaminationGraph
     _view->setRenderHint(QPainter::Antialiasing);
 }
 
-void PollutantContaminationGraph::setXAxisRange(Range range)
+void PollutantContaminationGraph::setXAxisRange(Range<QDateTime> range)
 {
     _xAxis->setRange(range.min, range.max);
 }
-void PollutantContaminationGraph::setYAxisRange(Range range)
+void PollutantContaminationGraph::setYAxisRange(Range<qreal> range)
 {
     _yAxis->setRange(range.min, range.max);
     _colourAxis->setRange(range.min, range.max);
-}
-void PollutantContaminationGraph::setAxesRange(Range xRange, Range yRange)
-{
-    setXAxisRange(xRange);
-    setYAxisRange(yRange);
 }
 
 void PollutantContaminationGraph::addPoints(const std::vector<Point>& points)

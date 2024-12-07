@@ -21,16 +21,28 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage() : Page("Persi
         );
     }
 
+    // TODO: Select PCB
     auto pcb = _pcbIdentifiers.front();
+
+    // TODO: Select time frame, max points
+
+    const QDateTime
+        startDate(QDate(2024, 1, 1), QTime(0, 0, 0)),
+        endDate(QDate(2025, 1, 1), QTime(0, 0, 0));
 
     records = db.query
     (
         "SELECT result, date FROM measurement "
         "WHERE determinand_id = :id "
-        "LIMIT 100",
+        "AND date BETWEEN :startDate AND :endDate "
+        "ORDER BY date ASC "
+        "LIMIT :maxPoints ",
         [&pcb](QSqlQuery& query)
         {
             query.bindValue(":id", pcb.id);
+            query.bindValue(":startDate", QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0)));
+            query.bindValue(":endDate", QDateTime(QDate(2025, 1, 1), QTime(0, 0, 0)));
+            query.bindValue(":maxPoints", 100);
         }
     );
 
@@ -43,11 +55,12 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage() : Page("Persi
             , record.field("result").value().toReal()
         );
     }
+    std::cout << pcb.name.toStdString() << std::endl;
 
     auto chart = new PollutantContaminationGraph
         ( "Persistent Organig Pollutants"
-        , { 0, 20 }
-        , { 0, 10 }
+        , { startDate, endDate }
+        , { 0, 30 }
         , {
             .veryLow = 2,
             .low = 3,
