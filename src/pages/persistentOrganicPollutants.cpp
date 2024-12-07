@@ -6,7 +6,7 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage()
 {
     auto records = _db.query
     (
-        "SELECT DISTINCT id, label FROM determinand "
+        "SELECT DISTINCT ID, LABEL, UNIT FROM determinand "
         "WHERE LABEL LIKE \"PCB %\""
     );
 
@@ -19,33 +19,71 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage()
         );
     }
 
-    // TODO: Select PCB
-    auto pcb = _pcbs.front();
-
     // TODO: Select time frame, max points
+    auto selectionLayout = new QHBoxLayout;
+    selectionLayout->addWidget(new QLabel("Show concentration of"), 0);
 
-    const QDateTime
-        startDate(QDate(2024, 1, 1), QTime(0, 0, 0)),
-        endDate(QDate(2025, 1, 1), QTime(0, 0, 0));
+    _pcbSelector = new QComboBox;
+    for(auto& pcb : _pcbs)
+    {
+        _pcbSelector->addItem(pcb.name, QVariant::fromValue(&pcb));
+    }
+    selectionLayout->addWidget(_pcbSelector);
 
-    records = _db.query
+    _startDateSelector = new QDateEdit,
+    _endDateSelector = new QDateEdit;
+    _startDateSelector->setDate(QDate(2024, 1, 1));
+    _endDateSelector->setDate(QDate(2025, 1, 1));
+    _startDateSelector->setCalendarPopup(true);
+    _endDateSelector->setCalendarPopup(true);
+    _startDateSelector->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    _endDateSelector->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+
+    _displayButton = new QPushButton("Display");
+
+    selectionLayout->addWidget(new QLabel("from"), 0);
+    selectionLayout->addWidget(_startDateSelector, 0);
+    selectionLayout->addWidget(new QLabel("to"), 0);
+    selectionLayout->addWidget(_endDateSelector, 0);
+    selectionLayout->addWidget(_displayButton);
+    selectionLayout->addStretch();
+
+    layout->addLayout(selectionLayout, 0);
+
+    connect
+        ( _displayButton
+        , &QPushButton::clicked
+        , this
+        , &PersistentOrganicPollutantsPage::updateGraph
+    );
+
+    updateGraph();
+}
+
+void PersistentOrganicPollutantsPage::updateGraph()
+{
+    auto& pcb = *_pcbSelector->currentData().value<PcbDeterminand*>();
+
+    const auto&
+        startDate = _startDateSelector->date().startOfDay(),
+        endDate = _endDateSelector->date().startOfDay();
+
+    auto records = _db.query
     (
         "SELECT RESULT, DATE FROM measurement "
         "WHERE DETERMINAND_ID = :id "
         "AND DATE BETWEEN :startDate AND :endDate "
-        "ORDER BY DATE ASC "
-        "LIMIT :maxMeasurements"
+        "ORDER BY DATE ASC"
         , std::vector<Binding>
         {
             { ":id", pcb.id },
             { ":startDate", QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0)) },
             { ":endDate", QDateTime(QDate(2025, 1, 1), QTime(0, 0, 0)) },
-            { ":maxMeasurements", 100 }
         }
     );
 
     std::vector<PollutantContaminationGraph::Point> measurements;
-    for(auto record : records)
+    for(const auto& record : records)
     {
         measurements.emplace_back
             ( record.field("date").value().toDateTime()
@@ -53,8 +91,8 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage()
         );
     }
 
-    auto chart = new PollutantContaminationGraph
-        ( "Persistent Organig Pollutants"
+    auto graph = new PollutantContaminationGraph
+        ( "Persistent Organic Pollutants"
         , { startDate, endDate }
         , { 0, 30 }
         , {
@@ -63,10 +101,18 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage()
             .high = 6,
             .veryHigh = 8
         }
+        , pcb.units
         , measurements
     );
 
-    layout->addWidget(chart->view());
-
-    attachLayout();
+    if(!_graph)
+    {
+        _graph.reset(graph);
+        layout->addWidget(_graph->view());
+    }
+    else
+    {
+        layout->replaceWidget(_graph->view(), graph->view());
+        _graph.reset(graph);
+    }
 }

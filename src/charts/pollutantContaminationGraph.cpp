@@ -12,6 +12,7 @@ PollutantContaminationGraph::PollutantContaminationGraph
     , Range<QDateTime> timeRange
     , Range<qreal> concentrationRange
     , ComplianceLevels complianceLevels
+    , const QString& units
     , const std::vector<Point>& points
 )
     : _xAxis(new QDateTimeAxis)
@@ -33,7 +34,7 @@ PollutantContaminationGraph::PollutantContaminationGraph
     _xAxis->setTitleText("Time");
     addAxis(_xAxis, Qt::AlignBottom);
 
-    _yAxis->setLabelFormat("%f");
+    _yAxis->setLabelFormat("%.2f" + units);
     _yAxis->setTitleText("Concentration");
     addAxis(_yAxis, Qt::AlignLeft);
 

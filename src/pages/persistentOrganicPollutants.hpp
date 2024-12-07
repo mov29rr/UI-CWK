@@ -30,11 +30,22 @@ class PersistentOrganicPollutantsPage : public Page
 private:
     DbConnection _db;
     std::vector<PcbDeterminand> _pcbs;
+
+    std::unique_ptr<PollutantContaminationGraph> _graph;
+
     // TODO: Caching system
-    std::unordered_map<PcbDeterminand*, std::unique_ptr<std::vector<PollutantContaminationGraph::Point>>> _pcbMeasurements;
+    std::unordered_map<PcbDeterminand*, std::unique_ptr<PollutantContaminationGraph::Point>> _graphs;
+
+    QComboBox* _pcbSelector;
+    QDateEdit
+        *_startDateSelector,
+        *_endDateSelector;
+    QPushButton* _displayButton;
 public:
     /**
      * Constructs the persistent organic pollutants page.
      */
     PersistentOrganicPollutantsPage();
+private:
+    void updateGraph();
 };

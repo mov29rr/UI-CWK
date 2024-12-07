@@ -10,9 +10,6 @@ Page::Page(const char* title)
     header->setObjectName("header");
     layout->addWidget(header);
     layout->setAlignment(header, Qt::AlignCenter);
-}
 
-void Page::attachLayout()
-{
     setLayout(layout);
 }

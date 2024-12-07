@@ -72,6 +72,7 @@ public:
      * @param timeRange the x-axis time range.
      * @param concentrationRange the y-axis concentration range.
      * @param complianceLevels the compliance levels.
+     * @param units the concentration units.
      * @param points the point data to add to the graph (optional, can add later using PollutantContaminationGraph::addPoints).
      */
     PollutantContaminationGraph
@@ -79,6 +80,7 @@ public:
         , Range<QDateTime> timeRange
         , Range<qreal> concentrationRange
         , ComplianceLevels complianceLevels
+        , const QString& units
         , const std::vector<Point>& points = {}
     );
 
