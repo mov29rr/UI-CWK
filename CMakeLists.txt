@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 file(GLOB_RECURSE DATABASE "src/database/**")
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets Charts Core Sql)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Charts Core Sql LinguistTools)
 qt_standard_project_setup()
 
 set(SRC_FILES
@@ -25,6 +25,8 @@ set(SRC_FILES
 )
 
 qt_add_executable(app ${SRC_FILES})
+
+qt_add_translations(app TS_FILES waterQuality_es.ts waterQuality_fr.ts waterQuality_de.ts waterQuality_en.ts)  
 
 include_directories(app PUBLIC "${CMAKE_SOURCE_DIR}/src")
 
