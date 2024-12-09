@@ -24,8 +24,9 @@ set(SRC_FILES
     src/pages/pollutantOverview.cpp
     src/pages/flourinatedCompound.cpp
 
+    src/charts/baseChart.cpp
     src/charts/pollutantContaminationGraph.cpp
-    src/charts/dateFloatChart.cpp
+    src/charts/autoScaleDateFLoatChart.cpp
 )
 
 qt_add_executable(app ${SRC_FILES})

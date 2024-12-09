@@ -1,15 +1,27 @@
 #include "flourinatedCompound.hpp"
 
 FlourinatedCompoundsPage::FlourinatedCompoundsPage() : Page("Flourinated Compounds Page") {
+  QVBoxLayout* filterWrapper = new QVBoxLayout;
+
   QLabel* compoundLabel = new QLabel("Compound:", this);
 
-  layout->addWidget(compoundLabel);
-  layout->addWidget(m_compound_select);
+  QHBoxLayout* compoundRow = new QHBoxLayout;
+  compoundRow->setSpacing(8);
+  compoundRow->setAlignment(Qt::AlignLeft);
+  compoundRow->addWidget(compoundLabel);
+  compoundRow->addWidget(m_compound_select);
+  filterWrapper->addLayout(compoundRow);
 
   QLabel* siteLabel = new QLabel("Site:", this);
 
-  layout->addWidget(siteLabel);
-  layout->addWidget(m_site_select);
+  QHBoxLayout* siteRow = new QHBoxLayout;
+  siteRow->setSpacing(8);
+  siteRow->setAlignment(Qt::AlignLeft);
+  siteRow->addWidget(siteLabel);
+  siteRow->addWidget(m_site_select);
+  filterWrapper->addLayout(siteRow);
+
+  layout->addLayout(filterWrapper);
 
   int compound_id = -1;
 
@@ -37,7 +49,8 @@ FlourinatedCompoundsPage::FlourinatedCompoundsPage() : Page("Flourinated Compoun
           &FlourinatedCompoundsPage::onSiteChange);
 
   // m_chart->setTitle("Date vs Integer Chart");
-  m_chart = new DateFloatChart();
+  m_chart = new AutoScaleDateFLoatChart("florinated compounds",
+                                        ComplianceLevels{.veryLow = 2, .low = 3, .high = 6, .veryHigh = 8});
 
   m_chart_view = new QChartView(m_chart, this);
   m_chart_view->setRenderHint(QPainter::Antialiasing);
@@ -47,7 +60,7 @@ FlourinatedCompoundsPage::FlourinatedCompoundsPage() : Page("Flourinated Compoun
   onCompoundChange(0);
   onSiteChange(0);
 
-  attachLayout();
+  setLayout(layout);
 }
 
 void FlourinatedCompoundsPage::onCompoundChange(int index) {
@@ -94,7 +107,7 @@ void FlourinatedCompoundsPage::onSiteChange(int index) {
       QDateTime dateTime = QDateTime::fromString(date, "yyyy-MM-ddThh:mm:ss");
 
       if (dateTime.isValid()) {
-        m_chart->addPoint(dateTime, value);
+        m_chart->addPoint(BaseChart::Point{dateTime, value});
       } else {
         qDebug() << "Invalid date format:" << date;
       }

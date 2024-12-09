@@ -1,16 +1,16 @@
 #pragma once
 
-#include "pages/pollutantOverview.hpp"
+#include "pages/flourinatedCompound.hpp"
 #include "pages/persistentOrganicPollutants.hpp"
+#include "pages/pollutantOverview.hpp"
 
 /**
  * The main window class
  */
-class Window : public QWidget
-{
-public:
-    /**
-     * Constructs the window
-     */
-    Window();
+class Window : public QWidget {
+ public:
+  /**
+   * Constructs the window
+   */
+  Window();
 };

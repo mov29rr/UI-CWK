@@ -5,15 +5,8 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QVBoxLayout>
-#include <QtCharts/QChartView>
-#include <QtCharts/QDateTimeAxis>
-#include <QtCharts/QLineSeries>
-#include <QtCharts/QValueAxis>
-#include <random>
-#include <string>
 
-// #include "charts/compilanceDateGraph.hpp"
-#include "charts/dateFloatChart.hpp"
+#include "charts/autoScaleDateFLoatChart.hpp"
 #include "page.hpp"
 
 struct CompoundType {
@@ -34,7 +27,7 @@ class FlourinatedCompoundsPage : public Page {
   QComboBox *m_compound_select = new QComboBox(this);
   QComboBox *m_site_select = new QComboBox(this);
 
-  DateFloatChart *m_chart = nullptr;
+  AutoScaleDateFLoatChart *m_chart = nullptr;
   QChartView *m_chart_view = nullptr;
 
  public:
