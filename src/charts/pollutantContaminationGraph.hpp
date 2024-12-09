@@ -6,10 +6,13 @@
 
 /**
  * The range structure, stores minimum and maximum values
+ * 
+ * @tparam T the data type for the range.
  */
+template<typename T>
 struct Range
 {
-    qreal
+    T
         min,
         max;
 };
@@ -32,16 +35,26 @@ struct ComplianceLevels
 };
 
 /**
- * The compliance colour coded line graph chart class
+ * The pollutant contamination graph chart class.
  */
-class ComplianceColourCodedLineGraph : public QChart
+class PollutantContaminationGraph : public QChart
 {
+public:
+    /**
+     * Describes an individual point on the graph.
+     */
+    struct Point
+    {
+        /// The point time
+        QDateTime time;
+        /// The point concentration
+        qreal concentration;
+    };
 private:
     QChartView* _view;
 
-    QValueAxis
-        *_xAxis,
-        *_yAxis;
+    QDateTimeAxis* _xAxis;
+    QValueAxis* _yAxis;
     QColorAxis* _colourAxis;
 
     QLineSeries* _line;
@@ -53,61 +66,54 @@ private:
     ComplianceLevels _complianceLevels;
 public:
     /**
-     * Constructs the graph
+     * Constructs the graph.
      * 
      * @param title the graph title.
-     * @param xRange the x-axis range.
-     * @param yRange the y-axis range.
+     * @param timeRange the x-axis time range.
+     * @param concentrationRange the y-axis concentration range.
      * @param complianceLevels the compliance levels.
-     * @param points the points to add to the graph (optional, can add later using ComplianceColourCodedLineGraph::addPoints).
+     * @param units the concentration units.
+     * @param points the point data to add to the graph (optional, can add later using PollutantContaminationGraph::addPoints).
      */
-    ComplianceColourCodedLineGraph
+    PollutantContaminationGraph
         ( const QString& title
-        , const QString& xTitle
-        , const QString& yTitle
-        , Range xRange
-        , Range yRange
+        , Range<QDateTime> timeRange
+        , Range<qreal> concentrationRange
         , ComplianceLevels complianceLevels
-        , const std::vector<QPointF>& points
+        , const QString& units
+        , const std::vector<Point>& points = {}
     );
 
     /**
-     * Returns a pointer to the chart view
+     * Returns a pointer to the chart view.
      * 
      * @return A mutable pointer to the chart view.
      */
     inline QChartView* view() { return _view; }
     /**
-     * Returns a pointer to the chart view
+     * Returns a pointer to the chart view.
      * 
      * @return A non-mutable pointer to the chart view.
      */
     inline const QChartView* view() const { return _view; }
 
     /**
-     * Sets the x-axis range.
+     * Sets the x-axis time range.
      * 
-     * @param range the x-axis range to set to.
+     * @param range the x-axis time range to set to.
      */
-    void setXAxisRange(Range range);
+    void setTimeRange(Range<QDateTime> range);
     /**
-     * Sets the y-axis range.
+     * Sets the y-axis concentration range.
      * 
-     * @param range the y-axis range to set to.
+     * @param range the y-axis concentration range to set to.
      */
-    void setYAxisRange(Range range);
-    /**
-     * Sets the x and y axis range.
-     * 
-     * @param xRange the x-axis range.
-     * @param yRange the y-axis range.
-     */
-    void setAxesRange(Range xRange, Range yRange);
+    void setConcentrationRange(Range<qreal> range);
 
     /**
-     * Adds points to the graph
+     * Adds points to the graph.
      * 
      * @param points the points to add to the graph.
      */
-    void addPoints(const std::vector<QPointF>& points);
+    void addPoints(const std::vector<Point>& points);
 };

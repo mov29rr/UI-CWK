@@ -46,6 +46,4 @@ PollutantOverviewPage::PollutantOverviewPage() : Page("Pollutant Overview Page")
 
   	layout->addSpacing(15);
   	layout->addWidget(divider2);
-
-  	attachLayout();
 }

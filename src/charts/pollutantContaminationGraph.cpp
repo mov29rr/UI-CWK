@@ -1,4 +1,4 @@
-#include "complianceColourCodedLineGraph.hpp"
+#include "pollutantContaminationGraph.hpp"
 
 #define RED 0xFF0000
 #define AMBER 0xFFB000
@@ -7,16 +7,15 @@
 
 qreal mean(qreal a, qreal b) { return (a + b) / 2; }
 
-ComplianceColourCodedLineGraph::ComplianceColourCodedLineGraph
+PollutantContaminationGraph::PollutantContaminationGraph
     ( const QString& title
-    , const QString& xTitle
-    , const QString& yTitle
-    , Range xRange
-    , Range yRange
+    , Range<QDateTime> timeRange
+    , Range<qreal> concentrationRange
     , ComplianceLevels complianceLevels
-    , const std::vector<QPointF>& points = {}
+    , const QString& units
+    , const std::vector<Point>& points
 )
-    : _xAxis(new QValueAxis)
+    : _xAxis(new QDateTimeAxis)
     , _yAxis(new QValueAxis)
     , _colourAxis(new QColorAxis)
     , _line(new QLineSeries)
@@ -32,19 +31,18 @@ ComplianceColourCodedLineGraph::ComplianceColourCodedLineGraph
     legend->hide();
 
     // Adding the axes
-    _xAxis->setLabelFormat("%i");
-    _xAxis->setTitleText(xTitle);
+    _xAxis->setTitleText("Time");
     addAxis(_xAxis, Qt::AlignBottom);
 
-    _yAxis->setLabelFormat("%i");
-    _yAxis->setTitleText(yTitle);
+    _yAxis->setLabelFormat("%.2f" + units);
+    _yAxis->setTitleText("Concentration");
     addAxis(_yAxis, Qt::AlignLeft);
 
     // Adding the points to the series
     addPoints(points);
 
     // Adding the colour gradient axis
-    const qreal range = yRange.max - yRange.min;
+    const qreal range = concentrationRange.max - concentrationRange.min;
 
     auto gradient = new QLinearGradient(QPointF(0, 0), QPointF(0, 1));
     gradient->setColorAt(_complianceLevels.veryHigh / range, RED);
@@ -56,7 +54,8 @@ ComplianceColourCodedLineGraph::ComplianceColourCodedLineGraph
     _colourAxis->setTickCount(2);
     addAxis(_colourAxis, Qt::AlignRight);
 
-    setAxesRange(xRange, yRange);
+    setTimeRange(timeRange);
+    setConcentrationRange(concentrationRange);
 
     // Adding the compliance regions
     QColor
@@ -72,10 +71,10 @@ ComplianceColourCodedLineGraph::ComplianceColourCodedLineGraph
         *lowLine = new QLineSeries,
         *highLine = new QLineSeries,
         *topLine = new QLineSeries;
-    *bottomLine << QPointF(xRange.min, yRange.min) << QPointF(xRange.max, yRange.min);
-    *lowLine << QPointF(xRange.min, _complianceLevels.low) << QPointF(xRange.max, _complianceLevels.low);
-    *highLine << QPointF(xRange.min, _complianceLevels.high) << QPointF(xRange.max, _complianceLevels.high);
-    *topLine << QPointF(xRange.min, yRange.max) << QPointF(xRange.max, yRange.max);
+    *bottomLine << QPointF(0, concentrationRange.min) << QPointF(1, concentrationRange.min);
+    *lowLine << QPointF(0, _complianceLevels.low) << QPointF(1, _complianceLevels.low);
+    *highLine << QPointF(0, _complianceLevels.high) << QPointF(1, _complianceLevels.high);
+    *topLine << QPointF(0, concentrationRange.max) << QPointF(1, concentrationRange.max);
 
     QAreaSeries
         *lowArea = new QAreaSeries(bottomLine, lowLine),
@@ -83,15 +82,12 @@ ComplianceColourCodedLineGraph::ComplianceColourCodedLineGraph
         *highArea = new QAreaSeries(highLine, topLine);
 
     addSeries(lowArea);
-    lowArea->attachAxis(_xAxis);
     lowArea->attachAxis(_yAxis);
     lowArea->setColor(lowRegionColour);
     addSeries(midArea);
-    midArea->attachAxis(_xAxis);
     midArea->attachAxis(_yAxis);
     midArea->setColor(midRegionColour);
     addSeries(highArea);
-    highArea->attachAxis(_xAxis);
     highArea->attachAxis(_yAxis);
     highArea->setColor(highRegionColour);
 
@@ -119,39 +115,35 @@ ComplianceColourCodedLineGraph::ComplianceColourCodedLineGraph
     _view->setRenderHint(QPainter::Antialiasing);
 }
 
-void ComplianceColourCodedLineGraph::setXAxisRange(Range range)
+void PollutantContaminationGraph::setTimeRange(Range<QDateTime> range)
 {
     _xAxis->setRange(range.min, range.max);
 }
-void ComplianceColourCodedLineGraph::setYAxisRange(Range range)
+void PollutantContaminationGraph::setConcentrationRange(Range<qreal> range)
 {
     _yAxis->setRange(range.min, range.max);
     _colourAxis->setRange(range.min, range.max);
 }
-void ComplianceColourCodedLineGraph::setAxesRange(Range xRange, Range yRange)
-{
-    setXAxisRange(xRange);
-    setYAxisRange(yRange);
-}
 
-void ComplianceColourCodedLineGraph::addPoints(const std::vector<QPointF>& points)
+void PollutantContaminationGraph::addPoints(const std::vector<Point>& points)
 {
     for(auto point : points)
     {
-        *_line << point;
+        qint64 msSinceEpoch = point.time.toMSecsSinceEpoch();
 
-        qreal height = point.y();
-        if(height <= _complianceLevels.low)
+        _line->append(msSinceEpoch, point.concentration);
+
+        if(point.concentration <= _complianceLevels.low)
         {
-            *_lowPointScatter << point; 
+            _lowPointScatter->append(msSinceEpoch, point.concentration);
         }
-        else if(_complianceLevels.low <= height && height <= _complianceLevels.high)
+        else if(_complianceLevels.low <= point.concentration && point.concentration <= _complianceLevels.high)
         {
-            *_mediumPointScatter << point;
+            _mediumPointScatter->append(msSinceEpoch, point.concentration);
         }
-        else if(height >= _complianceLevels.high)
+        else if(point.concentration >= _complianceLevels.high)
         {
-            *_highPointScatter << point;
+            _highPointScatter->append(msSinceEpoch, point.concentration);
         }
     }
 }

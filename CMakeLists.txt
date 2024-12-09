@@ -17,11 +17,13 @@ set(SRC_FILES
     src/core/application.cpp
     src/core/window.cpp
 
+    src/database/dbConnection.cpp
+
     src/pages/page.cpp
     src/pages/persistentOrganicPollutants.cpp
     src/pages/pollutantOverview.cpp
 
-    src/charts/complianceColourCodedLineGraph.cpp
+    src/charts/pollutantContaminationGraph.cpp
 )
 
 qt_add_executable(app ${SRC_FILES})
@@ -32,7 +34,7 @@ include_directories(app PUBLIC "${CMAKE_SOURCE_DIR}/src")
 
 add_custom_target(symlink_stylesheets ALL COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_SOURCE_DIR}/stylesheets" "${CMAKE_BINARY_DIR}/stylesheets")
 
-target_link_libraries(app PRIVATE Qt6::Widgets Qt6::Charts)
+target_link_libraries(app PRIVATE Qt6::Widgets Qt6::Charts Qt6::Sql)
 
 set_target_properties(app PROPERTIES
     WIN32_EXECUTABLE ON

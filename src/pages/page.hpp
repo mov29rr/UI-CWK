@@ -20,9 +20,4 @@ protected:
      * @param title the page title.
      */
     Page(const char* title);
-
-    /**
-     * Attaches a layout to the page
-     */
-    void attachLayout();
 };
