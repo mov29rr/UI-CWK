@@ -20,8 +20,9 @@ set(SRC_FILES
     src/database/dbConnection.cpp
 
     src/pages/page.cpp
-    src/pages/persistentOrganicPollutants.cpp
     src/pages/pollutantOverview.cpp
+    src/pages/persistentOrganicPollutants.cpp
+    src/pages/complianceDashboard.cpp
 
     src/charts/pollutantContaminationGraph.cpp
 )

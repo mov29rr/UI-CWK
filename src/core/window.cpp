@@ -1,5 +1,9 @@
 #include "window.hpp"
 
+#include "pages/pollutantOverview.hpp"
+#include "pages/persistentOrganicPollutants.hpp"
+#include "pages/complianceDashboard.hpp"
+
 Window::Window()
 {
     setObjectName("body");
@@ -15,7 +19,8 @@ Window::Window()
     const std::vector<Page*> pages
     {
         new PollutantOverviewPage,
-        new PersistentOrganicPollutantsPage
+        new PersistentOrganicPollutantsPage,
+        new ComplianceDashboardPage
     };
 
     for(auto page : pages)
