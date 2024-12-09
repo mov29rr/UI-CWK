@@ -26,9 +26,17 @@ set(SRC_FILES
     src/charts/pollutantContaminationGraph.cpp
 )
 
+set(TRANSLATION_FILES
+
+    translations/waterQuality_es.ts
+    translations/waterQuality_fr.ts
+    translations/waterQuality_de.ts
+    translations/waterQuality_en.ts
+)
+
 qt_add_executable(app ${SRC_FILES})
 
-qt_add_translations(app TS_FILES waterQuality_es.ts waterQuality_fr.ts waterQuality_de.ts waterQuality_en.ts)  
+qt_add_translations(app TS_FILES ${TRANSLATION_FILES})
 
 include_directories(app PUBLIC "${CMAKE_SOURCE_DIR}/src")
 
@@ -52,8 +60,8 @@ qt_add_executable (migration
 )
 
 target_sources(migration PRIVATE
-${DATABASE}
-${MIGRATE_DIR}
+    ${DATABASE}
+    ${MIGRATE_DIR}
 )
 
 target_link_libraries(migration PRIVATE Qt6::Widgets Qt6::Core Qt6::Sql)
