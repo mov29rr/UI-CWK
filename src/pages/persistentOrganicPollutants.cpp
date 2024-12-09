@@ -74,11 +74,11 @@ void PersistentOrganicPollutantsPage::updateGraph()
         "WHERE DETERMINAND_ID = :id "
         "AND DATE BETWEEN :startDate AND :endDate "
         "ORDER BY DATE ASC"
-        , std::vector<Binding>
+        , std::vector<QueryBinding>
         {
             { ":id", pcb.id },
             { ":startDate", QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0)) },
-            { ":endDate", QDateTime(QDate(2025, 1, 1), QTime(0, 0, 0)) },
+            { ":endDate", QDateTime(QDate(2025, 1, 1), QTime(0, 0, 0)) }
         }
     );
 

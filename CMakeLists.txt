@@ -17,6 +17,8 @@ set(SRC_FILES
     src/core/application.cpp
     src/core/window.cpp
 
+    src/database/dbConnection.cpp
+
     src/pages/page.cpp
     src/pages/persistentOrganicPollutants.cpp
     src/pages/pollutantOverview.cpp

@@ -9,46 +9,37 @@
 #include <functional>
 #include <cassert>
 
-struct Binding
+/**
+ * The database query binding structure.
+ */
+struct QueryBinding
 {
     QString fieldName;
     QVariant value;
 };
 
+/**
+ * The database connection structure.
+ */
 class DbConnection
 {
 private:
     QSqlDatabase _connection;
 public:
-    DbConnection(const QString& path) : _connection(QSqlDatabase::addDatabase("QSQLITE"))
-    {
-        _connection.setDatabaseName(path);
+    /**
+     * Constructs a database connection.
+     * 
+     * @param path the connection string.
+     */
+    DbConnection(const QString& path);
 
-        if (!_connection.open())
-        {
-            throw std::runtime_error("Failed to connect to database");
-        }
-    }
-
-    std::vector<QSqlRecord> query(const QString& queryString, const std::vector<Binding>& bindings = {})
-    {
-        QSqlQuery query(_connection);
-        query.prepare(queryString);
-        
-        for(const Binding& binding : bindings)
-        {
-            query.bindValue(binding.fieldName, binding.value);
-        }
-
-        assert(query.exec() && "Failed to query database");
-        
-        std::vector<QSqlRecord> records;
-
-        while(query.next())
-        {
-            records.push_back(query.record());
-        }
-
-        return records;
-    }
+    /**
+     * Applies a query.
+     * 
+     * @param queryString the query string to query.
+     * @param bindings an array of query bindings to apply.
+     * 
+     * @return The results of the query.
+     */
+    std::vector<QSqlRecord> query(const QString& queryString, const std::vector<QueryBinding>& bindings = {});
 };
