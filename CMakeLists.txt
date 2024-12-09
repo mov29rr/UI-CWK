@@ -22,8 +22,10 @@ set(SRC_FILES
     src/pages/page.cpp
     src/pages/persistentOrganicPollutants.cpp
     src/pages/pollutantOverview.cpp
+    src/pages/flourinatedCompound.cpp
 
     src/charts/pollutantContaminationGraph.cpp
+    src/charts/dateFloatChart.cpp
 )
 
 qt_add_executable(app ${SRC_FILES})
