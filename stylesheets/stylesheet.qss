@@ -1,0 +1,28 @@
+#body
+{
+    min-width: 600px;
+    min-height: 400px;
+}
+
+#header
+{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+QListWidget#sidebar
+{
+    background: #0A97B0;
+    outline: none;
+}
+QListWidget#sidebar::item
+{
+    height: 40px;
+    color: black;
+}
+QListWidget#sidebar::item:selected
+{
+    background: #0A5EB0;
+    outline: none;
+    color: black;
+}

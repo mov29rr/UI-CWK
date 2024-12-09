@@ -2,19 +2,39 @@ cmake_minimum_required(VERSION 3.16)
 
 project(WaterQualityInspector VERSION 1.0.0 LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 file(GLOB_RECURSE DATABASE "src/database/**")
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets Core Sql)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Charts Core Sql LinguistTools)
 qt_standard_project_setup()
 
-qt_add_executable ( app
+set(SRC_FILES
+
     src/main.cpp
+    
+    src/core/application.cpp
+    src/core/window.cpp
+
+    src/database/dbConnection.cpp
+
+    src/pages/page.cpp
+    src/pages/persistentOrganicPollutants.cpp
+    src/pages/pollutantOverview.cpp
+
+    src/charts/pollutantContaminationGraph.cpp
 )
 
-target_link_libraries(app PRIVATE Qt6::Widgets)
+qt_add_executable(app ${SRC_FILES})
+
+qt_add_translations(app TS_FILES waterQuality_es.ts waterQuality_fr.ts waterQuality_de.ts waterQuality_en.ts)  
+
+include_directories(app PUBLIC "${CMAKE_SOURCE_DIR}/src")
+
+add_custom_target(symlink_stylesheets ALL COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_SOURCE_DIR}/stylesheets" "${CMAKE_BINARY_DIR}/stylesheets")
+
+target_link_libraries(app PRIVATE Qt6::Widgets Qt6::Charts Qt6::Sql)
 
 set_target_properties(app PROPERTIES
     WIN32_EXECUTABLE ON
