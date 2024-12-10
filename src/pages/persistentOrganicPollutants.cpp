@@ -45,6 +45,14 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage()
   updateGraph();
 }
 
+void PersistentOrganicPollutantsPage::onMount(const QString hash) {
+  if (!toMount(hash)) {
+    return;
+  }
+
+  // TODO: move query here
+}
+
 void PersistentOrganicPollutantsPage::updateGraph() {
   auto& pcb = *_pcbSelector->currentData().value<PcbDeterminand*>();
 

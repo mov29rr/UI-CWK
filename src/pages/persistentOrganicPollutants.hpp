@@ -40,6 +40,8 @@ class PersistentOrganicPollutantsPage : public Page {
    */
   PersistentOrganicPollutantsPage();
 
+  void onMount(const QString hash) override;
+
  private:
   void updateGraph();
 };

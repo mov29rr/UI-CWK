@@ -10,26 +10,14 @@ file(GLOB_RECURSE DATABASE "src/database/**")
 find_package(Qt6 REQUIRED COMPONENTS Widgets Charts Core Sql LinguistTools)
 qt_standard_project_setup()
 
-set(SRC_FILES
+file(GLOB_RECURSE SRC_FILES "src/**")
+list(FILTER SRC_FILES EXCLUDE REGEX "^.*/main\\.cpp$")
 
-    src/main.cpp
-    
-    src/core/application.cpp
-    src/core/window.cpp
+qt_add_executable(app src/main.cpp)
 
-    src/database/dbConnection.cpp
-
-    src/pages/page.cpp
-    src/pages/persistentOrganicPollutants.cpp
-    src/pages/pollutantOverview.cpp
-    src/pages/flourinatedCompound.cpp
-
-    src/charts/baseChart.cpp
-    src/charts/pollutantContaminationGraph.cpp
-    src/charts/autoScaleDateFLoatChart.cpp
+target_sources(app PRIVATE
+${SRC_FILES}
 )
-
-qt_add_executable(app ${SRC_FILES})
 
 qt_add_translations(app TS_FILES waterQuality_es.ts waterQuality_fr.ts waterQuality_de.ts waterQuality_en.ts)  
 

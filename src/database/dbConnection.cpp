@@ -1,33 +1,28 @@
 #include "dbConnection.hpp"
 
-DbConnection::DbConnection(const QString& path) : _connection(QSqlDatabase::addDatabase("QSQLITE"))
-{
-    _connection.setDatabaseName(path);
+DbConnection::DbConnection(const QString& path) : _connection(QSqlDatabase::addDatabase("QSQLITE")) {
+  _connection.setDatabaseName(path);
 
-    if (!_connection.open())
-    {
-        throw std::runtime_error("Failed to connect to database");
-    }
+  if (!_connection.open()) {
+    throw std::runtime_error("Failed to connect to database");
+  }
 }
 
-std::vector<QSqlRecord> DbConnection::query(const QString& queryString, const std::vector<QueryBinding>& bindings)
-{
-    QSqlQuery query(_connection);
-    query.prepare(queryString);
-    
-    for(const auto& binding : bindings)
-    {
-        query.bindValue(binding.fieldName, binding.value);
-    }
+std::vector<QSqlRecord> DbConnection::query(const QString& queryString, const std::vector<QueryBinding>& bindings) {
+  QSqlQuery query(_connection);
+  query.prepare(queryString);
 
-    assert(query.exec() && "Failed to query database");
+  for (const auto& binding : bindings) {
+    query.bindValue(binding.fieldName, binding.value);
+  }
 
-    std::vector<QSqlRecord> records;
+  assert(query.exec() && "Failed to query database");
 
-    while(query.next())
-    {
-        records.push_back(query.record());
-    }
+  std::vector<QSqlRecord> records;
 
-    return records;
+  while (query.next()) {
+    records.push_back(query.record());
+  }
+
+  return records;
 }
