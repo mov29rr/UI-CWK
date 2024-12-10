@@ -2,23 +2,11 @@
 
 PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage()
     : Page("Persistent Organic Pollutants"), _db("../database/database.sqlite") {
-  auto records = _db.query(
-      "SELECT DISTINCT ID, LABEL, UNIT FROM determinand "
-      "WHERE LABEL LIKE \"PCB %\"");
-
-  for (const auto& record : records) {
-    _pcbs.emplace_back(record.field("ID").value().toInt(), record.field("LABEL").value().toString(),
-                       record.field("UNIT").value().toString());
-  }
-
   // TODO: Select time frame, max points
   auto selectionLayout = new QHBoxLayout;
   selectionLayout->addWidget(new QLabel("Show concentration of"), 0);
 
   _pcbSelector = new QComboBox;
-  for (auto& pcb : _pcbs) {
-    _pcbSelector->addItem(pcb.name, QVariant::fromValue(&pcb));
-  }
   selectionLayout->addWidget(_pcbSelector);
 
   _startDateSelector = new QDateEdit, _endDateSelector = new QDateEdit;
@@ -41,8 +29,6 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage()
   layout->addLayout(selectionLayout, 0);
 
   connect(_displayButton, &QPushButton::clicked, this, &PersistentOrganicPollutantsPage::updateGraph);
-
-  updateGraph();
 }
 
 void PersistentOrganicPollutantsPage::onMount(const QString hash) {
@@ -50,7 +36,20 @@ void PersistentOrganicPollutantsPage::onMount(const QString hash) {
     return;
   }
 
-  // TODO: move query here
+  auto records = _db.query(
+      "SELECT DISTINCT ID, LABEL, UNIT FROM determinand "
+      "WHERE LABEL LIKE \"PCB %\"");
+
+  for (const auto& record : records) {
+    _pcbs.emplace_back(record.field("ID").value().toInt(), record.field("LABEL").value().toString(),
+                       record.field("UNIT").value().toString());
+  }
+
+  for (auto& pcb : _pcbs) {
+    _pcbSelector->addItem(pcb.name, QVariant::fromValue(&pcb));
+  }
+
+  updateGraph();
 }
 
 void PersistentOrganicPollutantsPage::updateGraph() {

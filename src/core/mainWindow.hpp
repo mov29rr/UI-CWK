@@ -35,19 +35,12 @@ class MainWindow : public QMainWindow {
     // TODO: remove
     _db = QSqlDatabase::addDatabase("QSQLITE");
     _db.setDatabaseName("../database/database.sqlite");
-    _window->onChangeDB(generateRandomHash());
 
     if (_db.open()) {
       qDebug() << "Database is open!";
+      _window->onChangeDB(generateRandomHash());
     } else {
       qDebug() << "Failed to open database!";
-    }
-
-    QSqlDatabase test_db = QSqlDatabase::database(QSqlDatabase::defaultConnection, false);
-    if (test_db.isValid() && test_db.isOpen()) {
-      qDebug() << "test databse open!";
-    } else {
-      qDebug() << "test databse not valid || not open!";
     }
 
     setCentralWidget(_window.get());
@@ -103,6 +96,9 @@ class MainWindow : public QMainWindow {
       QMessageBox::information(this, "Success", "Migration completed successfully!");
 
       _db.setDatabaseName("../database/gen_db.sqlite");
+      if (!_db.isOpen()) {
+        _db.open();
+      }
       _window->onChangeDB(generateRandomHash());
     } else {
       QMessageBox::warning(this, "No File", "No file was selected.");
