@@ -32,15 +32,23 @@ class MainWindow : public QMainWindow {
     connect(openAction, &QAction::triggered, this, &MainWindow::openFile);
     fileMenu->addAction(openAction);
 
-    // TODO: remove
-    _db = QSqlDatabase::addDatabase("QSQLITE");
-    _db.setDatabaseName("../database/database.sqlite");
+    QString exeDir = QCoreApplication::applicationDirPath();
 
-    if (_db.open()) {
-      qDebug() << "Database is open!";
-      _window->onChangeDB(generateRandomHash());
-    } else {
-      qDebug() << "Failed to open database!";
+    qDebug() << "executable path" << exeDir;
+
+    QString dbPath = exeDir + "/../database/database.sqlite";
+
+    if (QFile::exists(dbPath)) {
+      // TODO: remove
+      _db = QSqlDatabase::addDatabase("QSQLITE");
+      _db.setDatabaseName(dbPath);
+
+      if (_db.open()) {
+        qDebug() << "Database is open!";
+        _window->onChangeDB(generateRandomHash());
+      } else {
+        qDebug() << "Failed to open database!";
+      }
     }
 
     setCentralWidget(_window.get());
@@ -71,7 +79,9 @@ class MainWindow : public QMainWindow {
     if (!fileName.isEmpty()) {
       QProcess process;
       QStringList arguments;
-      arguments << fileName << "../database/gen_db.sqlite";
+
+      QString exeDir = QCoreApplication::applicationDirPath();
+      arguments << fileName << exeDir + "/../database/gen_db.sqlite";
 
       connect(&process, &QProcess::readyReadStandardOutput,
               [&process]() { qDebug() << process.readAllStandardOutput(); });
@@ -79,7 +89,7 @@ class MainWindow : public QMainWindow {
       connect(&process, &QProcess::readyReadStandardError,
               [&process]() { qDebug() << process.readAllStandardError(); });
 
-      process.start("./migration", arguments);
+      process.start(exeDir + "/migration", arguments);
 
       if (!process.waitForStarted()) {
         qDebug() << "Failed to start migration!";
