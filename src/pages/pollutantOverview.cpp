@@ -1,6 +1,8 @@
 #include "pollutantOverview.hpp"
 
-PollutantOverviewPage::PollutantOverviewPage(Window* window) : Page(window, "Pollutant Overview Page")
+#include <iostream>
+
+PollutantOverviewPage::PollutantOverviewPage() : Page("Pollutant Overview Page")
 {
   	// create searchbar
   	auto searchLabel = new QLabel(tr("Search:"));

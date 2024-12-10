@@ -11,8 +11,13 @@ void Consumer::run() {
     // CSVRow row = std::move(m_queue.pop());
     // if (row != nullptr) {
     // std::cout << "row: " << i << std::endl << std::flush;
+    CSVRow row;
 
-    processRow(std::make_unique<CSVRow>(std::move(m_queue.pop())));
+    if (!m_queue.pop(row)) {
+      return;
+    }
+
+    processRow(std::make_unique<CSVRow>(row));
     i++;
     // }
   }

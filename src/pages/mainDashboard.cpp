@@ -2,7 +2,7 @@
 
 #include "cards/card.hpp"
 
-MainDashboardPage::MainDashboardPage(Window* window, QListWidget* pageList, QStackedWidget* pageStack, const std::vector<Page*>& pages) : Page(window, "Dashboard")
+MainDashboardPage::MainDashboardPage(QListWidget* pageList, QStackedWidget* pageStack, const std::vector<Page*>& pages) : Page("Dashboard")
 {
     auto grid = new QWidget;
     auto gridLayout = new QVBoxLayout;

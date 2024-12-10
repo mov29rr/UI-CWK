@@ -18,6 +18,14 @@ bool Database::isOpen() const { return m_db.isOpen(); }
 void Database::initDatabase() {
   {
     QSqlQuery query(m_db);
+    query.prepare(
+        "SELECT 'DROP TABLE IF EXISTS \"' || name || '\";' "
+        "FROM sqlite_master "
+        "WHERE type = 'table';");
+    assert(query.exec() && "Failed to drop all table");
+  }
+  {
+    QSqlQuery query(m_db);
     query.prepare("PRAGMA journal_mode=WAL;");
     if (!query.exec()) {
       QSqlError error = query.lastError();

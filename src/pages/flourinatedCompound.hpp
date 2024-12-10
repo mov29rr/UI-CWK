@@ -34,7 +34,9 @@ class FlourinatedCompoundsPage : public Page {
   /**
    * Constructs the pollutant overview page
    */
-  FlourinatedCompoundsPage(Window* window);
+  FlourinatedCompoundsPage();
+
+  void onMount(const QString hash) override;
 
  private slots:
   void onCompoundChange(int index);

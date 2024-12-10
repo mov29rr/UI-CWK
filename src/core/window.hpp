@@ -5,12 +5,18 @@
 /**
  * The main window class
  */
-class Window : public QWidget
-{
-	Q_OBJECT
-public:
-	/**
-	 * Constructs the window
-	 */
-	Window();
+class Window : public QWidget {
+ private:
+  QString _hash;
+
+  QListWidget *_sidebar;
+  QStackedWidget *_content;
+
+ public:
+  /**
+   * Constructs the window
+   */
+  Window();
+
+  void onChangeDB(const QString hash);
 };
