@@ -14,7 +14,7 @@ Card::Card(QWidget* parent, const QStackedWidget* stack, Page* page)
     auto cardLayout = new QHBoxLayout;
 
     cardLayout->setAlignment(Qt::AlignCenter);
-    cardLayout->addWidget(new QLabel("CARD"));
+    cardLayout->addWidget(new QLabel(page->title));
 
     card->setLayout(cardLayout);
 

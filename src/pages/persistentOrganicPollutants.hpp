@@ -39,6 +39,8 @@ private:
 public:
 	/**
 	 * Constructs the persistent organic pollutants page.
+	 * 
+	 * @param window the parent window.
 	 */
 	PersistentOrganicPollutantsPage(Window* window);
 

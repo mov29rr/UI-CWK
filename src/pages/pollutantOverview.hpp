@@ -3,13 +3,15 @@
 #include "page.hpp"
 
 /**
- * The pollutant overview page
+ * The pollutant overview page.
  */
 class PollutantOverviewPage : public Page
 {
 public:
     /**
-     * Constructs the pollutant overview page
+     * Constructs the pollutant overview page.
+     * 
+     * @param window the parent window.
      */
     PollutantOverviewPage(Window* window);
 };

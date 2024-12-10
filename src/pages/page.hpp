@@ -20,7 +20,11 @@ protected:
     /**
      * Constructs the page
      * 
+     * @param window the parent window.
      * @param title the page title.
      */
-    Page(Window* parent, const char* title);
+    Page(Window* window, const char* title);
+
+    // TODO: Make pure virtual
+    virtual QWidget* overview() {}
 };
