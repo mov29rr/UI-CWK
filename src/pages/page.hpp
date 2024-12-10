@@ -20,6 +20,18 @@ class Page : public QWidget {
   // Menu bar
   QMenuBar* menuBar;
 
+  QString _hash;
+
+  bool toMount(const QString hash) {
+    if (hash == _hash) {
+      return false;
+    }
+
+    _hash = hash;
+    return true;
+  }
+
+ public:
   /**
    * Constructs the page
    *
@@ -36,4 +48,6 @@ class Page : public QWidget {
    * Allows for translation of page to chosen language
    */
   void changeLanguage(const QString& language);
+
+  virtual void onMount(const QString hash) {};
 };

@@ -23,25 +23,6 @@ FlourinatedCompoundsPage::FlourinatedCompoundsPage() : Page("Flourinated Compoun
 
   content->addLayout(filterWrapper);
 
-  int compound_id = -1;
-
-  QSqlQuery query;
-  query.prepare("SELECT ID, LABEL, UNIT FROM determinand");
-  if (query.exec()) {
-    while (query.next()) {
-      if (compound_id == -1) {
-        compound_id = query.value("ID").toInt();
-        qDebug() << "site name:" << compound_id;
-      }
-
-      QString compoundName = query.value("LABEL").toString();
-      QString determinand_unit = query.value("UNIT").toString();
-      m_compound_select->addItem(compoundName, query.value("ID"));
-      m_compound.push_back({query.value("ID"), compoundName, determinand_unit});
-    }
-  } else {
-    qDebug() << "Faild to get compound:" << query.lastError().text();
-  }
   connect(m_compound_select, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
           &FlourinatedCompoundsPage::onCompoundChange);
 
@@ -56,12 +37,45 @@ FlourinatedCompoundsPage::FlourinatedCompoundsPage() : Page("Flourinated Compoun
   m_chart_view->setRenderHint(QPainter::Antialiasing);
 
   content->addWidget(m_chart_view);
+}
+
+void FlourinatedCompoundsPage::onMount(const QString hash) {
+  if (!toMount(hash)) {
+    return;
+  }
+
+  int compound_id = -1;
+
+  QSqlQuery query;
+  query.prepare("SELECT ID, LABEL, UNIT FROM determinand");
+  if (query.exec()) {
+    m_compound.clear();
+    m_compound_select->clear();
+
+    while (query.next()) {
+      if (compound_id == -1) {
+        compound_id = query.value("ID").toInt();
+      }
+
+      QString compoundName = query.value("LABEL").toString();
+      QString determinand_unit = query.value("UNIT").toString();
+      m_compound_select->addItem(compoundName, query.value("ID"));
+      m_compound.push_back({query.value("ID"), compoundName, determinand_unit});
+    }
+  } else {
+    qDebug() << "Faild to get compound:" << query.lastError().text();
+    return;
+  }
 
   onCompoundChange(0);
   onSiteChange(0);
 }
 
 void FlourinatedCompoundsPage::onCompoundChange(int index) {
+  if (m_compound.size() == 0) {
+    return;
+  }
+
   int determinand_id = m_compound_select->itemData(index).toInt();
   CompoundType compound = m_compound.at(index);
   m_chart->setYTitle(QString("%1 (%2)").arg(compound.label).arg(compound.unit));
@@ -84,8 +98,6 @@ void FlourinatedCompoundsPage::onCompoundChange(int index) {
 }
 
 void FlourinatedCompoundsPage::onSiteChange(int index) {
-  qDebug() << "site change:" << index;
-
   m_chart->clear();
 
   int site_id = m_site_select->itemData(index).toInt();

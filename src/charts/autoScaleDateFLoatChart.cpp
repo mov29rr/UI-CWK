@@ -68,7 +68,5 @@ void AutoScaleDateFLoatChart::updateAxis(const Point* point) {
 
   _yAxis->setRange(min, max + m_top_padding);
 
-  qDebug() << "update gradiet:" << min << max << m_top_padding;
-
-  updateGradient({ 0, max + m_top_padding });
+  updateGradient({0, max + m_top_padding});
 }
