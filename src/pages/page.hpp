@@ -10,9 +10,11 @@ class Page : public QWidget
 public:
     /// The page title
     const char* const title;
+private:
+    QVBoxLayout* _layout;
 protected:
-    /// The page layout
-    QVBoxLayout* layout;
+    /// The page content layout
+    QVBoxLayout* content;
 
     /**
      * Constructs the page

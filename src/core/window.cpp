@@ -5,6 +5,8 @@ Window::Window()
     setObjectName("body");
 
     auto layout = new QHBoxLayout;
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
 
     auto sidebar = new QListWidget;
     auto content = new QStackedWidget;
@@ -35,6 +37,6 @@ Window::Window()
 
     layout->addWidget(sidebar);
     layout->addWidget(content, 1);
-    layout->setContentsMargins(0, 0, 0, 0);
+
     setLayout(layout);
 }
