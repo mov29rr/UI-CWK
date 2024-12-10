@@ -33,7 +33,12 @@ Window::Window()
 		sidebar->setCurrentRow(0);
 	}
 
-  	connect(sidebar, &QListWidget::currentRowChanged, content, &QStackedWidget::setCurrentIndex);
+  	connect
+		( sidebar
+		, &QListWidget::currentRowChanged
+		, content
+		, &QStackedWidget::setCurrentIndex
+	);
 
     layout->addWidget(sidebar);
     layout->addWidget(content, 1);

@@ -7,8 +7,6 @@ PollutantContaminationGraph::PollutantContaminationGraph(const QString& title, R
     : BaseChart(title, complianceLevels) {
   _yAxis->setLabelFormat("%.2f" + units);
 
-  updateGradient(concentrationRange.min, concentrationRange.max);
-
   addPoints(points);
 
   setTimeRange(timeRange);
@@ -19,6 +17,8 @@ void PollutantContaminationGraph::setTimeRange(Range<QDateTime> range) { _xAxis-
 void PollutantContaminationGraph::setConcentrationRange(Range<qreal> range) {
   _yAxis->setRange(range.min, range.max);
   _colourAxis->setRange(range.min, range.max);
+
+  updateGradient(range);
 }
 
 void PollutantContaminationGraph::addPoints(const std::vector<Point>& points) {

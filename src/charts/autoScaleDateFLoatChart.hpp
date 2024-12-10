@@ -30,7 +30,7 @@ class AutoScaleDateFLoatChart : public BaseChart {
 
   void setUnit(const QString& units);
 
-  void clear() override;
+  void clear();
 
   void addPoint(const Point& point);
 
