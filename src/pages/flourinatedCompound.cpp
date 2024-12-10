@@ -36,9 +36,7 @@ FlourinatedCompoundsPage::FlourinatedCompoundsPage() : Page("Flourinated Compoun
   m_chart_view = new QChartView(m_chart, this);
   m_chart_view->setRenderHint(QPainter::Antialiasing);
 
-  layout->addWidget(m_chart_view);
-
-  setLayout(layout);
+  content->addWidget(m_chart_view);
 }
 
 void FlourinatedCompoundsPage::onMount(const QString hash) {
@@ -68,20 +66,6 @@ void FlourinatedCompoundsPage::onMount(const QString hash) {
     qDebug() << "Faild to get compound:" << query.lastError().text();
     return;
   }
-  connect(m_compound_select, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-          &FlourinatedCompoundsPage::onCompoundChange);
-
-  connect(m_site_select, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-          &FlourinatedCompoundsPage::onSiteChange);
-
-  // m_chart->setTitle("Date vs Integer Chart");
-  m_chart = new AutoScaleDateFLoatChart("florinated compounds",
-                                        ComplianceLevels{.veryLow = 2, .low = 3, .high = 6, .veryHigh = 8});
-
-  m_chart_view = new QChartView(m_chart, this);
-  m_chart_view->setRenderHint(QPainter::Antialiasing);
-
-  content->addWidget(m_chart_view);
 
   onCompoundChange(0);
   onSiteChange(0);

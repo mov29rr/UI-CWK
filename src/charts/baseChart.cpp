@@ -79,9 +79,9 @@ void BaseChart::updateGradient(Range<qreal> range) {
   const qreal delta = range.max - range.min;
 
   auto gradient = new QLinearGradient(QPointF(0, 0), QPointF(0, 1));
-  gradient->setColorAt(qBound(0.0, _complianceLevels.veryHigh / range, 1.0), RED);
-  gradient->setColorAt(qBound(0.0, mean(_complianceLevels.low, _complianceLevels.high) / range, 1.0), AMBER);
-  gradient->setColorAt(qBound(0.0, _complianceLevels.veryLow / range, 1.0), GREEN);
+  gradient->setColorAt(qBound(0.0, _complianceLevels.veryHigh / delta, 1.0), RED);
+  gradient->setColorAt(qBound(0.0, mean(_complianceLevels.low, _complianceLevels.high) / delta, 1.0), AMBER);
+  gradient->setColorAt(qBound(0.0, _complianceLevels.veryLow / delta, 1.0), GREEN);
 
   _colourAxis->setGradient(*gradient);
 }

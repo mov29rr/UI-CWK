@@ -26,7 +26,7 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage()
   selectionLayout->addWidget(_displayButton);
   selectionLayout->addStretch();
 
-  layout->addLayout(selectionLayout, 0);
+  content->addLayout(selectionLayout, 0);
 
   connect(_displayButton, &QPushButton::clicked, this, &PersistentOrganicPollutantsPage::updateGraph);
 }
@@ -77,9 +77,9 @@ void PersistentOrganicPollutantsPage::updateGraph() {
 
   if (!_graph) {
     _graph.reset(graph);
-    layout->addWidget(_graph->view());
+    content->addWidget(_graph->view());
   } else {
-    layout->replaceWidget(_graph->view(), graph->view());
+    content->replaceWidget(_graph->view(), graph->view());
     _graph.reset(graph);
   }
 }

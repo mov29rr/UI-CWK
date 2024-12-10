@@ -6,6 +6,7 @@
  * Abstract base class for pages within the app
  */
 class Page : public QWidget {
+  Q_OBJECT
  public:
   /// The page title
   const char* const title;

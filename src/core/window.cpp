@@ -26,7 +26,21 @@ Window::Window() {
     _sidebar->setCurrentRow(0);
   }
 
-  connect(sidebar, &QListWidget::currentRowChanged, content, &QStackedWidget::setCurrentIndex);
+  connect(_sidebar, &QListWidget::currentRowChanged, this, [this](int currentRow) {
+    _content->setCurrentIndex(currentRow);
+
+    QSqlDatabase db = QSqlDatabase::database(QSqlDatabase::defaultConnection, false);
+
+    if (db.isValid() && db.isOpen()) {
+      QWidget* widget = _content->widget(currentRow);
+      if (widget) {
+        auto customWidget = qobject_cast<Page*>(widget);
+        if (customWidget) {
+          customWidget->onMount(_hash);
+        }
+      }
+    }
+  });
 
   layout->addWidget(_sidebar);
   layout->addWidget(_content, 1);
