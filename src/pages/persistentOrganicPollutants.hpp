@@ -9,17 +9,17 @@
 
 /**
  * The PCB determinand structure.
- * 
+ *
  * Identifies a PCB in the data.
  */
 struct PcbDeterminand
 {
-    /// The PCB ID
-    int id;
-    /// The PCB name
-    QString name;
-    /// The PCB concentration units
-    QString units;
+	/// The PCB ID
+	int id;
+	/// The PCB name
+	QString name;
+	/// The PCB concentration units
+	QString units;
 };
 
 /**
@@ -28,21 +28,20 @@ struct PcbDeterminand
 class PersistentOrganicPollutantsPage : public Page
 {
 private:
-    DbConnection _db;
-    std::vector<PcbDeterminand> _pcbs;
+	DbConnection _db;
+	std::vector<PcbDeterminand> _pcbs;
 
-    std::unique_ptr<PollutantContaminationGraph> _graph;
+	std::unique_ptr<PollutantContaminationGraph> _graph;
 
-    QComboBox* _pcbSelector;
-    QDateEdit
-        *_startDateSelector,
-        *_endDateSelector;
-    QPushButton* _displayButton;
+	QComboBox* _pcbSelector;
+	QDateEdit *_startDateSelector, *_endDateSelector;
+	QPushButton* _displayButton;
 public:
-    /**
-     * Constructs the persistent organic pollutants page.
-     */
-    PersistentOrganicPollutantsPage();
+	/**
+	 * Constructs the persistent organic pollutants page.
+	 */
+	PersistentOrganicPollutantsPage();
+
 private:
     void updateGraph();
 };

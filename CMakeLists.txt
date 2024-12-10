@@ -22,8 +22,11 @@ set(SRC_FILES
     src/pages/page.cpp
     src/pages/persistentOrganicPollutants.cpp
     src/pages/pollutantOverview.cpp
+    src/pages/flourinatedCompound.cpp
 
+    src/charts/baseChart.cpp
     src/charts/pollutantContaminationGraph.cpp
+    src/charts/autoScaleDateFLoatChart.cpp
 )
 
 set(TRANSLATION_FILES
