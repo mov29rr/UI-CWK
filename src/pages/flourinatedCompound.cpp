@@ -23,11 +23,38 @@ FlourinatedCompoundsPage::FlourinatedCompoundsPage() : Page("Flourinated Compoun
 
   content->addLayout(filterWrapper);
 
+  connect(m_compound_select, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+          &FlourinatedCompoundsPage::onCompoundChange);
+
+  connect(m_site_select, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+          &FlourinatedCompoundsPage::onSiteChange);
+
+  // m_chart->setTitle("Date vs Integer Chart");
+  m_chart = new AutoScaleDateFLoatChart("florinated compounds",
+                                        ComplianceLevels{.veryLow = 2, .low = 3, .high = 6, .veryHigh = 8});
+
+  m_chart_view = new QChartView(m_chart, this);
+  m_chart_view->setRenderHint(QPainter::Antialiasing);
+
+  layout->addWidget(m_chart_view);
+
+  setLayout(layout);
+}
+
+void FlourinatedCompoundsPage::onMount(const QString hash) {
+  if (!toMount(hash)) {
+    return;
+  }
+
+  qDebug() << "inner mount!";
   int compound_id = -1;
 
   QSqlQuery query;
   query.prepare("SELECT ID, LABEL, UNIT FROM determinand");
   if (query.exec()) {
+    m_compound.clear();
+    m_compound_select->clear();
+
     while (query.next()) {
       if (compound_id == -1) {
         compound_id = query.value("ID").toInt();
@@ -62,6 +89,12 @@ FlourinatedCompoundsPage::FlourinatedCompoundsPage() : Page("Flourinated Compoun
 }
 
 void FlourinatedCompoundsPage::onCompoundChange(int index) {
+  if (m_compound.size() == 0) {
+    return;
+  }
+
+  qDebug() << "compound change:" << index;
+
   int determinand_id = m_compound_select->itemData(index).toInt();
   CompoundType compound = m_compound.at(index);
   m_chart->setYTitle(QString("%1 (%2)").arg(compound.label).arg(compound.unit));

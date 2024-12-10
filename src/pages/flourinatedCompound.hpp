@@ -36,6 +36,8 @@ class FlourinatedCompoundsPage : public Page {
    */
   FlourinatedCompoundsPage();
 
+  void onMount(const QString hash) override;
+
  private slots:
   void onCompoundChange(int index);
   void onSiteChange(int index);
