@@ -34,7 +34,7 @@ class FlourinatedCompoundsPage : public Page {
   /**
    * Constructs the pollutant overview page
    */
-  FlourinatedCompoundsPage();
+  FlourinatedCompoundsPage(Window* window);
 
  private slots:
   void onCompoundChange(int index);

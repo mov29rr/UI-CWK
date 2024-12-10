@@ -1,12 +1,13 @@
 #pragma once
 
-#include <QtWidgets>
+#include "core/window.hpp"
 
 /**
  * Abstract base class for pages within the app
  */
 class Page : public QWidget
 {
+    Q_OBJECT
 public:
     /// The page title
     const char* const title;
@@ -21,5 +22,5 @@ protected:
      * 
      * @param title the page title.
      */
-    Page(const char* title);
+    Page(Window* parent, const char* title);
 };

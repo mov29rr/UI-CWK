@@ -1,7 +1,7 @@
 #include "persistentOrganicPollutants.hpp"
 
-PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage()
-    : Page("Persistent Organic Pollutants")
+PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage(Window* window)
+    : Page(window, "Persistent Organic Pollutants")
 	, _db("../database/database.sqlite")
 {
 	auto records = _db.query

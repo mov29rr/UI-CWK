@@ -11,5 +11,5 @@ public:
     /**
      * Constructs the pollutant overview page
      */
-    PollutantOverviewPage();
+    PollutantOverviewPage(Window* window);
 };

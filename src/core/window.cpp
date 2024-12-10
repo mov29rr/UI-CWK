@@ -1,5 +1,10 @@
 #include "window.hpp"
 
+#include "pages/mainDashboard.hpp"
+#include "pages/pollutantOverview.hpp"
+#include "pages/persistentOrganicPollutants.hpp"
+#include "pages/flourinatedCompound.hpp"
+
 Window::Window()
 {
 	setObjectName("body");
@@ -14,12 +19,16 @@ Window::Window()
 	sidebar->setObjectName("sidebar");
 	content->setObjectName("content");
 
-	const std::vector<Page*> pages
+	std::vector<Page*> pages
 	{
-		new PollutantOverviewPage,
-		new PersistentOrganicPollutantsPage,
-		new FlourinatedCompoundsPage
+		new PollutantOverviewPage(this),
+		new PersistentOrganicPollutantsPage(this),
+		new FlourinatedCompoundsPage(this)
 	};
+
+	auto mainDashboard = new MainDashboardPage(this, sidebar, content, pages);
+
+	pages.insert(pages.begin(), mainDashboard);
 
 	for (auto page : pages)
 	{

@@ -1,14 +1,13 @@
 #pragma once
 
-#include "pages/pollutantOverview.hpp"
-#include "pages/persistentOrganicPollutants.hpp"
-#include "pages/flourinatedCompound.hpp"
+#include <QtWidgets>
 
 /**
  * The main window class
  */
 class Window : public QWidget
 {
+	Q_OBJECT
 public:
 	/**
 	 * Constructs the window

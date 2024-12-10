@@ -35,3 +35,8 @@ QListWidget#sidebar::item:selected
 {
     border-top: 1px solid grey;
 }
+
+#card
+{
+    background-color: #5A6D3E;
+}

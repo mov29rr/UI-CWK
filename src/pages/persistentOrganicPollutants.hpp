@@ -40,7 +40,7 @@ public:
 	/**
 	 * Constructs the persistent organic pollutants page.
 	 */
-	PersistentOrganicPollutantsPage();
+	PersistentOrganicPollutantsPage(Window* window);
 
 private:
     void updateGraph();

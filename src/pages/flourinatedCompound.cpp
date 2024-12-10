@@ -1,6 +1,6 @@
 #include "flourinatedCompound.hpp"
 
-FlourinatedCompoundsPage::FlourinatedCompoundsPage() : Page("Flourinated Compounds Page") {
+FlourinatedCompoundsPage::FlourinatedCompoundsPage(Window* window) : Page(window, "Flourinated Compounds Page") {
   QVBoxLayout* filterWrapper = new QVBoxLayout;
 
   QLabel* compoundLabel = new QLabel("Compound:", this);

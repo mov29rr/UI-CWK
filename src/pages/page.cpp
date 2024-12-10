@@ -1,7 +1,8 @@
 #include "page.hpp"
 
-Page::Page(const char* title)
-	: title(title)
+Page::Page(Window* window, const char* title)
+	: QWidget(window)
+	, title(title)
 	, _layout(new QVBoxLayout)
 	, content(new QVBoxLayout)
 {
