@@ -1,5 +1,7 @@
 #include "flourinatedCompound.hpp"
 
+#include "charts/complianceDial.hpp"
+
 FlourinatedCompoundsPage::FlourinatedCompoundsPage() : Page("Flourinated Compounds Page") {
   QVBoxLayout* filterWrapper = new QVBoxLayout;
 
@@ -29,8 +31,7 @@ FlourinatedCompoundsPage::FlourinatedCompoundsPage() : Page("Flourinated Compoun
   connect(m_site_select, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
           &FlourinatedCompoundsPage::onSiteChange);
 
-  m_chart = new AutoScalingPollutantContaminationGraph("florinated compounds",
-                                        ComplianceLevels{.veryLow = 2, .low = 3, .high = 6, .veryHigh = 8});
+  m_chart = new AutoScalingPollutantContaminationGraph("florinated compounds", _complianceLevels);
 
   m_chart_view = new QChartView(m_chart, this);
   m_chart_view->setRenderHint(QPainter::Antialiasing);
@@ -127,7 +128,16 @@ void FlourinatedCompoundsPage::onSiteChange(int index) {
     }
 
     m_chart->addPoints(measurements);
+
+    _averageConcentration = std::accumulate(measurements.cbegin(), measurements.cend(), 0.0,
+                                            [](qreal sum, const PollutantContaminationPoint& measurement) {
+                                              return sum + measurement.concentration;
+                                            }) /
+                            measurements.size();
+
   } else {
     qDebug() << "Faild to get measurement:" << query.lastError().text();
   }
 }
+
+QWidget* FlourinatedCompoundsPage::overview() { return new ComplianceDial(_averageConcentration, {0, 10}, _complianceLevels); }

@@ -30,12 +30,14 @@ class PersistentOrganicPollutantsPage : public Page {
   std::vector<PcbDeterminand> _pcbs;
 
   std::unique_ptr<StaticScalingPollutantContaminationGraph> _graph;
+  qreal _averageConcentration = 0.0;
 
   QComboBox* _pcbSelector;
   QDateEdit *_startDateSelector, *_endDateSelector;
   QPushButton* _displayButton;
 
   const ComplianceLevels _complianceLevels {.veryLow = 2, .low = 3, .high = 6, .veryHigh = 8};
+  const Range<qreal> _concentrationRange { 0, 20 };
  public:
   /**
    * Constructs the persistent organic pollutants page.
@@ -49,6 +51,6 @@ class PersistentOrganicPollutantsPage : public Page {
 
   QWidget* overview() override
   {
-    return new ComplianceDial(3, {0, 10}, _complianceLevels);
+    return new ComplianceDial(_averageConcentration, { 0, 10 }, _complianceLevels);
   }
 };

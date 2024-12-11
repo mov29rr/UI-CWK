@@ -5,11 +5,11 @@ class ComplianceDial : public QWidget
     Q_OBJECT
 
 private:
-    int _value;
+    qreal& _value;
     Range<qreal> _range;
     ComplianceLevels _complianceLevels;
 public:
-    ComplianceDial(qreal value, Range<qreal> range, ComplianceLevels complianceLevels) : _value(value), _range(range), _complianceLevels(complianceLevels) {
+    ComplianceDial(qreal& value, Range<qreal> range, ComplianceLevels complianceLevels) : _value(value), _range(range), _complianceLevels(complianceLevels) {
         setFixedSize(300, 300);
         setWindowTitle("Speed Dial Indicator");
     }
@@ -31,8 +31,8 @@ protected:
     // Drawing the needle
     painter.setPen(QPen(Qt::blue, 4));
     int needleLength = width() / 2 - 30;
-    int angle = (_value / delta) * 180 + 180;
-    double radian = (angle - 120) * M_PI / 180.0;
+    qreal angle = (_value / delta) * 180.0 + 180.0;
+    qreal radian = angle * M_PI / 180.0;
 
     int needleX = width() / 2 + needleLength * qCos(radian);
     int needleY = height() / 2 - needleLength * qSin(radian);
