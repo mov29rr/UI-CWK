@@ -10,10 +10,18 @@ PageOverviewCard::PageOverviewCard(QWidget* parent, const QStackedWidget* stack,
     auto card = new QWidget;
     card->setObjectName("card");
 
-    auto cardLayout = new QHBoxLayout;
+    auto cardLayout = new QVBoxLayout;
+    auto cardTitle = new QLabel(page->title);
+    auto pageOverview = _page->overview();
 
-    cardLayout->setAlignment(Qt::AlignCenter);
-    cardLayout->addWidget(new QLabel(page->title));
+    cardTitle->setObjectName("title");
+    cardTitle->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
+
+    cardLayout->addWidget(cardTitle);
+    cardLayout->addWidget(pageOverview, 1);
+
+    cardLayout->setAlignment(cardTitle, Qt::AlignTop | Qt::AlignHCenter);
+    cardLayout->setAlignment(pageOverview, Qt::AlignCenter);
 
     card->setLayout(cardLayout);
 

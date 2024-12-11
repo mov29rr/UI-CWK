@@ -43,4 +43,9 @@ class PersistentOrganicPollutantsPage : public Page {
 
  private:
   void updateGraph();
+
+  QWidget* overview() override
+  {
+    return new QWidget;
+  }
 };

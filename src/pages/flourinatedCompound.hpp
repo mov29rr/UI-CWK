@@ -38,6 +38,12 @@ class FlourinatedCompoundsPage : public Page {
 
   void onMount(const QString hash) override;
 
+ private:
+  QWidget* overview() override
+  {
+    return new QLabel("TODO: OVERVIEW");
+  }
+
  private slots:
   void onCompoundChange(int index);
   void onSiteChange(int index);

@@ -11,4 +11,7 @@ class PollutantOverviewPage : public Page {
    * Constructs the pollutant overview page.
    */
   PollutantOverviewPage();
+
+ private:
+  QWidget* overview() override { return new QWidget; }
 };

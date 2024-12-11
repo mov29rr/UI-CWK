@@ -50,4 +50,9 @@ class Page : public QWidget {
   void changeLanguage(const QString& language);
 
   virtual void onMount(const QString hash) {};
+
+private:
+  virtual QWidget* overview() = 0;
+
+  friend class PageOverviewCard;
 };

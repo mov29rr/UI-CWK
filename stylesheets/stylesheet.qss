@@ -40,3 +40,9 @@ QListWidget#sidebar::item:selected
 {
     background-color: #5A6D3E;
 }
+#card > #title
+{
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+}
