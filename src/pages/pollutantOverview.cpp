@@ -11,22 +11,22 @@ PollutantOverviewPage::PollutantOverviewPage() : Page("Pollutant Overview Page")
   	searchLayout->addWidget(searchLabel);
   	searchLayout->addWidget(searchField);
 
-  	layout->addLayout(searchLayout);
-  	layout->addSpacing(10);
+  	content->addLayout(searchLayout);
+  	content->addSpacing(10);
 
   	// divider
   	auto divider1 = new QFrame();
   	divider1->setFrameShape(QFrame::HLine);
   	divider1->setFrameShadow(QFrame::Sunken);
 
-  	layout->addWidget(divider1);
+  	content->addWidget(divider1);
 
   	// information about pollutant depending on the pollutant chosen
   	auto pollutantLabel = new QLabel(tr("Pollutant"));
   	pollutantLabel->setAlignment(Qt::AlignLeft);
 
-  	layout->addWidget(pollutantLabel);
-  	layout->addSpacing(10);
+  	content->addWidget(pollutantLabel);
+  	content->addSpacing(10);
 
   	auto info = new QTextBrowser();
   	info->setText(QObject::tr(
@@ -38,12 +38,12 @@ PollutantOverviewPage::PollutantOverviewPage() : Page("Pollutant Overview Page")
   	info->setReadOnly(true);
   	info->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
-  	layout->addWidget(info);
+  	content->addWidget(info);
 
   	auto divider2 = new QFrame();
   	divider2->setFrameShape(QFrame::HLine);
   	divider2->setFrameShadow(QFrame::Sunken);
 
-  	layout->addSpacing(15);
-  	layout->addWidget(divider2);
+  	content->addSpacing(15);
+  	content->addWidget(divider2);
 }

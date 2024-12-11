@@ -14,8 +14,8 @@ class Producer : public QThread {
   Q_OBJECT
 
  public:
-  Producer(TSQueue<CSVRow> &queue, char *filename, std::atomic<bool> &done)
-      : m_queue(queue), filename(filename), done(done) {};
+  Producer(TSQueue<CSVRow> &queue, std::string filename, std::atomic<bool> &done)
+      : m_queue(queue), filename(filename) {};
 
   ~Producer() override {};
 
@@ -24,15 +24,13 @@ class Producer : public QThread {
     csv::CSVReader reader(filename);
 
     for (CSVRow &row : reader) {
-      // std::cout << "row json: " << row.to_json() << std::endl;
       m_queue.push(std::move(row));
     }
 
-    done.store(true);
+    m_queue.done();
   };
 
  private:
   TSQueue<CSVRow> &m_queue;
-  char *filename;
-  std::atomic<bool> &done;
+  std::string filename;
 };

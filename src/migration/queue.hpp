@@ -13,6 +13,7 @@ class TSQueue {
   std::mutex m_mutex;
   std::condition_variable m_cond;
   int i = 0;
+  bool m_done = false;
 
  public:
   void push(T item) {
@@ -22,11 +23,15 @@ class TSQueue {
     m_cond.notify_one();
   }
 
-  T pop() {
+  bool pop(T& item) {
     std::unique_lock<std::mutex> lock(m_mutex);
-    m_cond.wait(lock, [this]() { return !m_queue.empty(); });
+    m_cond.wait(lock, [this]() { return !m_queue.empty() || (m_done && m_queue.empty()); });
 
-    T item = std::move(m_queue.front());
+    if (m_done && m_queue.empty()) {
+      return false;
+    }
+
+    item = std::move(m_queue.front());
     m_queue.pop();
     // std::cout << "queue: " << m_queue.size() << std::endl << std::flush;
     i++;
@@ -34,6 +39,8 @@ class TSQueue {
     if (i % 1000 == 0) {
       std::cout << i << std::endl;
     }
-    return item;
+    return true;
   }
+
+  void done() { m_done = true; }
 };
