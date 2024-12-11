@@ -1,6 +1,6 @@
 #include "mainDashboard.hpp"
 
-#include "cards/card.hpp"
+#include "cards/pageOverview.hpp"
 
 MainDashboardPage::MainDashboardPage(QListWidget* pageList, QStackedWidget* pageStack, const std::vector<Page*>& pages) : Page("Dashboard")
 {
@@ -12,14 +12,14 @@ MainDashboardPage::MainDashboardPage(QListWidget* pageList, QStackedWidget* page
 
     for(int i = 0; i < pages.size(); ++i)
     {
-        auto card = new Card(grid, pageStack, pages[i]);
+        auto card = new PageOverviewCard(grid, pageStack, pages[i]);
         auto row = i % 2 ? row2 : row1;
         
         row->addWidget(card);
 
         connect
             ( card
-            , &Card::clicked
+            , &PageOverviewCard::clicked
             , pageList
             , [pageList](int index)
             {
@@ -28,7 +28,7 @@ MainDashboardPage::MainDashboardPage(QListWidget* pageList, QStackedWidget* page
         );
         connect
             ( card
-            , &Card::clicked
+            , &PageOverviewCard::clicked
             , pageStack
             , &QStackedWidget::setCurrentIndex
         );

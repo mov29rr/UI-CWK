@@ -1,7 +1,6 @@
-#include <iostream>
-#include "card.hpp"
+#include "pageOverview.hpp"
 
-Card::Card(QWidget* parent, const QStackedWidget* stack, Page* page)
+PageOverviewCard::PageOverviewCard(QWidget* parent, const QStackedWidget* stack, Page* page)
     : QWidget(parent)
     , _stack(stack)
     , _page(page)
@@ -23,7 +22,7 @@ Card::Card(QWidget* parent, const QStackedWidget* stack, Page* page)
     setLayout(layout);
 }
 
-void Card::mousePressEvent(QMouseEvent* event)
+void PageOverviewCard::mousePressEvent(QMouseEvent* event)
 {
     if(event->button() == Qt::LeftButton)
     {
