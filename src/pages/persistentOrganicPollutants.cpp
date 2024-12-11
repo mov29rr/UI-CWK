@@ -72,7 +72,7 @@ void PersistentOrganicPollutantsPage::updateGraph() {
   }
 
   auto graph = new StaticScalingPollutantContaminationGraph("Persistent Organic Pollutants", {startDate, endDate}, {0, 30},
-                                               ComplianceLevels{.veryLow = 2, .low = 3, .high = 6, .veryHigh = 8},
+                                               _complianceLevels,
                                                pcb.units, measurements);
 
   if (!_graph) {

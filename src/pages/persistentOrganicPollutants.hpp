@@ -3,6 +3,7 @@
 #include <unordered_map>
 
 #include "charts/staticScalingPollutantContaminationGraph.hpp"
+#include "charts/complianceDial.hpp"
 #include "database/dbConnection.hpp"
 #include "page.hpp"
 
@@ -33,6 +34,8 @@ class PersistentOrganicPollutantsPage : public Page {
   QComboBox* _pcbSelector;
   QDateEdit *_startDateSelector, *_endDateSelector;
   QPushButton* _displayButton;
+
+  const ComplianceLevels _complianceLevels {.veryLow = 2, .low = 3, .high = 6, .veryHigh = 8};
  public:
   /**
    * Constructs the persistent organic pollutants page.
@@ -46,6 +49,6 @@ class PersistentOrganicPollutantsPage : public Page {
 
   QWidget* overview() override
   {
-    return new QWidget;
+    return new ComplianceDial(3, {0, 10}, _complianceLevels);
   }
 };
