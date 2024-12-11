@@ -88,3 +88,8 @@ void PersistentOrganicPollutantsPage::updateGraph() {
     _graph.reset(graph);
   }
 }
+
+QWidget* PersistentOrganicPollutantsPage::overview()
+{
+  return new ComplianceDial(_averageConcentration, { 0, 10 }, _complianceLevels);
+}

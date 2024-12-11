@@ -49,8 +49,5 @@ class PersistentOrganicPollutantsPage : public Page {
  private:
   void updateGraph();
 
-  QWidget* overview() override
-  {
-    return new ComplianceDial(_averageConcentration, { 0, 10 }, _complianceLevels);
-  }
+  QWidget* overview() override;
 };

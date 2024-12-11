@@ -15,12 +15,11 @@ PageOverviewCard::PageOverviewCard(QWidget* parent, const QStackedWidget* stack,
     auto pageOverview = _page->overview();
 
     cardTitle->setObjectName("title");
-    cardTitle->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
 
     cardLayout->addWidget(cardTitle);
     cardLayout->addWidget(pageOverview, 1);
 
-    cardLayout->setAlignment(cardTitle, Qt::AlignTop | Qt::AlignHCenter);
+    cardLayout->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
     cardLayout->setAlignment(pageOverview, Qt::AlignCenter);
 
     card->setLayout(cardLayout);
