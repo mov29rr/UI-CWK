@@ -36,7 +36,7 @@ class TSQueue {
     // std::cout << "queue: " << m_queue.size() << std::endl << std::flush;
     i++;
 
-    if (i % 1000 == 0) {
+    if (i % 10000 == 0) {
       std::cout << i << std::endl;
     }
     return true;

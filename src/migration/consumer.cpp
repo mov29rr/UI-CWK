@@ -89,29 +89,49 @@ void Consumer::processRow(const std::unique_ptr<CSVRow> row) {
   }
 
   // std::cout << "determinand" << std::endl << std::flush;
+  m_measurements[m_index] = {
+      QString::fromStdString((*row)["sample.sampleDateTime"].get<std::string>()),
+      siteId,
+      QString::fromStdString((*row)["sample.purpose.label"].get<std::string>()),
+      (*row)["sample.isComplianceSample"].get<std::string>() == "true" ? 1 : 0,
+      QString::fromStdString((*row)["sample.sampledMaterialType.label"].get<std::string>()),
+      (*row)["result"].get<float>(),
+      QString::fromStdString((*row)["resultQualifier.notation"].get<std::string>()),
+      determinandId,
+      QString::fromStdString((*row)["codedResultInterpretation.interpretation"].get<std::string>())};
 
-  query.prepare(
+  m_index++;
+
+  if (m_index == ROWS_PER_INSERT) {
+    insertMeasurement();
+  }
+}
+
+void Consumer::insertMeasurement() {
+  QString queryString =
       "INSERT INTO measurement (DATE, SITE_ID, PURPOSE_LABEL, IS_COMPLIANCE, MATERIAL_TYPE, RESULT, "
-      "RESULT_QUALIFIER, DETERMINAND_ID, CODED_RESULT_INTERPRETATION) VALUES "
-      "(:DATE, :SITE_ID, :PURPOSE_LABEL, :IS_COMPLIANCE, :MATERIAL_TYPE, :RESULT, :RESULT_QUALIFIER, "
-      ":DETERMINAND_ID, :CODED_RESULT_INTERPRETATION)");
+      "RESULT_QUALIFIER, DETERMINAND_ID, CODED_RESULT_INTERPRETATION) VALUES ";
 
-  query.bindValue(":DATE", QString::fromStdString((*row)["sample.sampleDateTime"].get<std::string>()));
-  query.bindValue(":SITE_ID", siteId);
-  query.bindValue(":PURPOSE_LABEL", QString::fromStdString((*row)["sample.purpose.label"].get<std::string>()));
-  query.bindValue(":IS_COMPLIANCE", (*row)["sample.isComplianceSample"].get<std::string>() == "true" ? 1 : 0);
-  query.bindValue(":MATERIAL_TYPE",
-                  QString::fromStdString((*row)["sample.sampledMaterialType.label"].get<std::string>()));
-  query.bindValue(":RESULT", (*row)["result"].get<float>());
-  query.bindValue(":RESULT_QUALIFIER", QString::fromStdString((*row)["resultQualifier.notation"].get<std::string>()));
-  query.bindValue(":DETERMINAND_ID", determinandId);
-  query.bindValue(":CODED_RESULT_INTERPRETATION",
-                  QString::fromStdString((*row)["codedResultInterpretation.interpretation"].get<std::string>()));
+  for (int i = 0; i < m_index; i++) {
+    QString row = QString("('%1', %2, '%3', %4, '%5', %6, '%7', %8, '%9')")
+                      .arg(m_measurements[i].date)
+                      .arg(m_measurements[i].site_id)
+                      .arg(m_measurements[i].purpose_label)
+                      .arg(m_measurements[i].is_compliance)
+                      .arg(m_measurements[i].material_type)
+                      .arg(m_measurements[i].result)
+                      .arg(m_measurements[i].result_qualifier)
+                      .arg(m_measurements[i].determinand_id)
+                      .arg(m_measurements[i].coded_result_interpretation);
 
-  // QString sql = query.executedQuery();
-  // std::cout << "SQL Query: " << sql.toStdString() << std::endl;
-  // std::cerr << "Error executing query: " << row->to_json() << std::endl;
+    queryString += row;
+    if (i != m_index - 1) {
+      queryString += ", ";
+    }
+  }
 
-  database::threadWrite(&query, &m_sync, m_db);
-  // std::cout << "free lock" << m_id << std::endl << std::flush;
+  QSqlQuery query = m_db->getQuery();
+  database::threadExec(&query, &queryString, &m_sync, m_db);
+
+  m_index = 0;
 }

@@ -82,6 +82,68 @@ void threadWrite(QSqlQuery* query, Sync* sync, database::Database* m_db) {
   assert(false && "failed to call thread wtire");
 }
 
+void threadExec(QSqlQuery* query, QString* queryString, Sync* sync, database::Database* m_db) {
+  bool bTransaction = m_db != nullptr;
+
+  std::stringstream ss;
+  ss << std::this_thread::get_id();
+  std::string m_id = ss.str();
+
+  sync->to_write.store(sync->to_write.load() + 1);
+
+  std::unique_lock<std::shared_mutex> lock(sync->mtx);
+
+  sync->to_write.store(sync->to_write.load() - 1);
+
+  if (bTransaction) {
+    m_db->transaction();
+  }
+
+  if (query->exec(*queryString)) {
+    if (bTransaction) {
+      m_db->commit();
+    }
+
+    sync->cv.notify_all();
+    return;
+  }
+
+  QSqlError error = query->lastError();
+
+  int i = 1;
+  while (error.type() == QSqlError::ErrorType::ConnectionError && error.nativeErrorCode() == "517") {
+    QThread::msleep(1000);
+
+    if (query->exec(*queryString)) {
+      if (bTransaction) {
+        m_db->commit();
+      }
+
+      sync->cv.notify_all();
+      return;
+    }
+
+    error = query->lastError();
+
+    if (i % 10 == 0) {
+      m_db->reconnect();
+    }
+    i++;
+  }
+
+  if (bTransaction) {
+    m_db->rollback();
+  }
+
+  std::cerr << "Error executing query: " << error.text().toStdString() << std::endl;
+  std::cerr << "Error database error: " << error.databaseText().toStdString() << std::endl;
+  std::cerr << "error tyoe: " << error.type() << std::endl;
+  std::cerr << "SQL State: " << error.nativeErrorCode().toStdString() << std::endl;
+  std::cerr << "sql: " << query->executedQuery().toStdString() << std::endl;
+  std::cerr << "Error details: " << error.driverText().toStdString() << std::endl;
+  assert(false && "failed to call thread wtire");
+}
+
 int threadRead(QSqlQuery* query, Sync* sync) {
   std::stringstream ss;
   ss << std::this_thread::get_id();

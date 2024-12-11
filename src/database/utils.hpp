@@ -17,6 +17,7 @@
 namespace database {
 void logError(QSqlQuery* query);
 void threadWrite(QSqlQuery* query, Sync* mtx, database::Database* m_db = nullptr);
+void threadExec(QSqlQuery* query, QString* queryString, Sync* sync, database::Database* m_db);
 int threadRead(QSqlQuery* query, Sync* mtx);
 
 std::string parseString(const csv::CSVRow* row, const char* colName);
