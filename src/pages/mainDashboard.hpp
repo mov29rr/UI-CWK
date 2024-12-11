@@ -15,7 +15,4 @@ class MainDashboardPage : public Page {
    * @param pages the array of pages to redirect to.
    */
   MainDashboardPage(QListWidget* pageList, QStackedWidget* pageStack, const std::vector<Page*>& pages);
-
- private:
-  QWidget* overview() override { return new QWidget; }
 };

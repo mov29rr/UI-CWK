@@ -52,7 +52,7 @@ class Page : public QWidget {
   virtual void onMount(const QString hash) {};
 
 private:
-  virtual QWidget* overview() = 0;
+  virtual QWidget* overview() { return new QWidget; }
 
   friend class PageOverviewCard;
 };
