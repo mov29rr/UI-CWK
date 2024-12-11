@@ -71,9 +71,14 @@ void PersistentOrganicPollutantsPage::updateGraph() {
     measurements.emplace_back(record.field("date").value().toDateTime(), record.field("result").value().toReal());
   }
 
-  auto graph = new StaticScalingPollutantContaminationGraph("Persistent Organic Pollutants", {startDate, endDate}, {0, 30},
-                                               ComplianceLevels{.veryLow = 2, .low = 3, .high = 6, .veryHigh = 8},
-                                               pcb.units, measurements);
+  _averageConcentration = std::accumulate(measurements.cbegin(), measurements.cend(), 0.0,
+                                      [](qreal sum, const PollutantContaminationPoint& measurement) {
+                                        return sum + measurement.concentration;
+                                      }) /
+                          measurements.size();
+
+  auto graph = new StaticScalingPollutantContaminationGraph("Persistent Organic Pollutants", {startDate, endDate},
+                                                            _concentrationRange, _complianceLevels, pcb.units, measurements);
 
   if (!_graph) {
     _graph.reset(graph);
@@ -82,4 +87,9 @@ void PersistentOrganicPollutantsPage::updateGraph() {
     content->replaceWidget(_graph->view(), graph->view());
     _graph.reset(graph);
   }
+}
+
+QWidget* PersistentOrganicPollutantsPage::overview()
+{
+  return new ComplianceDial(_averageConcentration, { 0, 10 }, _complianceLevels);
 }

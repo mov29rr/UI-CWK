@@ -30,6 +30,9 @@ class FlourinatedCompoundsPage : public Page {
   AutoScalingPollutantContaminationGraph *m_chart = nullptr;
   QChartView *m_chart_view = nullptr;
 
+  const ComplianceLevels _complianceLevels {.veryLow = 2, .low = 3, .high = 6, .veryHigh = 8};
+  qreal _averageConcentration = 0.0;
+
  public:
   /**
    * Constructs the pollutant overview page
@@ -39,10 +42,7 @@ class FlourinatedCompoundsPage : public Page {
   void onMount(const QString hash) override;
 
  private:
-  QWidget* overview() override
-  {
-    return new QLabel("TODO: OVERVIEW");
-  }
+  QWidget* overview() override;
 
  private slots:
   void onCompoundChange(int index);

@@ -18,6 +18,8 @@ Window::Window() {
   _sidebar->setObjectName("sidebar");
   _content->setObjectName("content");
 
+  _sidebar->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+
 	std::vector<Page*> pages
 	{
 		new PollutantOverviewPage,
