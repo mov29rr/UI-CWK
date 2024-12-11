@@ -33,10 +33,7 @@ FlourinatedCompoundsPage::FlourinatedCompoundsPage() : Page("Flourinated Compoun
 
   m_chart = new AutoScalingPollutantContaminationGraph("florinated compounds", _complianceLevels);
 
-  m_chart_view = new QChartView(m_chart, this);
-  m_chart_view->setRenderHint(QPainter::Antialiasing);
-
-  content->addWidget(m_chart_view);
+  content->addWidget(m_chart);
 }
 
 void FlourinatedCompoundsPage::onMount(const QString hash) {

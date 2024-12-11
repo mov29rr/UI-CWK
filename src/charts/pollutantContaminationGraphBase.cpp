@@ -1,7 +1,8 @@
 #include "pollutantContaminationGraphBase.hpp"
 
 PollutantContaminationGraphBase::PollutantContaminationGraphBase(const QString &title, ComplianceLevels complianceLevels)
-    : _xAxis(new QDateTimeAxis),
+    : _chart(new QChart)
+    , _xAxis(new QDateTimeAxis),
       _yAxis(new QValueAxis),
       _colourAxis(new QColorAxis),
       _line(new QLineSeries),
@@ -9,22 +10,24 @@ PollutantContaminationGraphBase::PollutantContaminationGraphBase(const QString &
       _mediumPointScatter(new QScatterSeries),
       _highPointScatter(new QScatterSeries),
       _complianceLevels(std::move(complianceLevels)) {
-  setTitle(title);
+  auto layout = new QHBoxLayout;
+  
+  _chart->setTitle(title);
 
-  createDefaultAxes();
-  auto legend = this->legend();
+  _chart->createDefaultAxes();
+  auto legend = _chart->legend();
   legend->hide();
 
   // Adding the axes
   _xAxis->setTitleText("Time");
-  addAxis(_xAxis, Qt::AlignBottom);
+  _chart->addAxis(_xAxis, Qt::AlignBottom);
 
   _yAxis->setTitleText("Concentration");
-  addAxis(_yAxis, Qt::AlignLeft);
+  _chart->addAxis(_yAxis, Qt::AlignLeft);
 
   _colourAxis->setLabelsVisible(false);
   _colourAxis->setTickCount(2);
-  addAxis(_colourAxis, Qt::AlignRight);
+  _chart->addAxis(_colourAxis, Qt::AlignRight);
 
   // Adding the compliance regions
   QColor lowRegionColour(GREEN), midRegionColour(AMBER), highRegionColour(RED);
@@ -41,38 +44,46 @@ PollutantContaminationGraphBase::PollutantContaminationGraphBase(const QString &
   auto lowArea = new QAreaSeries(bottomLine, lowLine), midArea = new QAreaSeries(lowLine, highLine),
        highArea = new QAreaSeries(highLine, topLine);
 
-  addSeries(lowArea);
+  _chart->addSeries(lowArea);
   lowArea->attachAxis(_yAxis);
   lowArea->setColor(lowRegionColour);
-  addSeries(midArea);
+  _chart->addSeries(midArea);
   midArea->attachAxis(_yAxis);
   midArea->setColor(midRegionColour);
-  addSeries(highArea);
+  _chart->addSeries(highArea);
   highArea->attachAxis(_yAxis);
   highArea->setColor(highRegionColour);
 
   // Adding the line
-  addSeries(_line);
+  _chart->addSeries(_line);
   _line->attachAxis(_xAxis);
   _line->attachAxis(_yAxis);
   _line->setColor(Qt::blue);
 
   // Adding the points
-  addSeries(_lowPointScatter);
+  _chart->addSeries(_lowPointScatter);
   _lowPointScatter->attachAxis(_xAxis);
   _lowPointScatter->attachAxis(_yAxis);
   _lowPointScatter->setColor(GREEN);
-  addSeries(_mediumPointScatter);
+  _chart->addSeries(_mediumPointScatter);
   _mediumPointScatter->attachAxis(_xAxis);
   _mediumPointScatter->attachAxis(_yAxis);
   _mediumPointScatter->setColor(AMBER);
-  addSeries(_highPointScatter);
+  _chart->addSeries(_highPointScatter);
   _highPointScatter->attachAxis(_xAxis);
   _highPointScatter->attachAxis(_yAxis);
   _highPointScatter->setColor(RED);
 
-  _view = new QChartView(this);
+  connect(_lowPointScatter, &QScatterSeries::clicked, this, &PollutantContaminationGraphBase::onPointClicked);
+  connect(_mediumPointScatter, &QScatterSeries::clicked, this, &PollutantContaminationGraphBase::onPointClicked);
+  connect(_highPointScatter, &QScatterSeries::clicked, this, &PollutantContaminationGraphBase::onPointClicked);
+
+  _view = new QChartView(_chart);
   _view->setRenderHint(QPainter::Antialiasing);
+
+  layout->addWidget(_view);
+
+  setLayout(layout);
 }
 
 void PollutantContaminationGraphBase::updateGradient(Range<qreal> range) {
@@ -106,4 +117,15 @@ void PollutantContaminationGraphBase::addPoints(const std::vector<PollutantConta
   {
     addPoint(point);
   }
+}
+
+void PollutantContaminationGraphBase::onPointClicked(const QPointF& point)
+{
+  PollutantContaminationPoint measurement
+  {
+    .time = QDateTime::fromMSecsSinceEpoch(point.x()),
+    .concentration = point.y()
+  };
+
+  // Display
 }

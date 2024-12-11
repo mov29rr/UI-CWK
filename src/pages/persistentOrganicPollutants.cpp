@@ -82,9 +82,9 @@ void PersistentOrganicPollutantsPage::updateGraph() {
 
   if (!_graph) {
     _graph.reset(graph);
-    content->addWidget(_graph->view());
+    content->addWidget(_graph.get());
   } else {
-    content->replaceWidget(_graph->view(), graph->view());
+    content->replaceWidget(_graph.get(), graph);
     _graph.reset(graph);
   }
 }
