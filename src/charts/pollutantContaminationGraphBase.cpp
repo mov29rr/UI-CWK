@@ -1,8 +1,10 @@
 #include "pollutantContaminationGraphBase.hpp"
 
-PollutantContaminationGraphBase::PollutantContaminationGraphBase(const QString &title, ComplianceLevels complianceLevels)
-    : _chart(new QChart)
-    , _xAxis(new QDateTimeAxis),
+PollutantContaminationGraphBase::PollutantContaminationGraphBase(const QString& title,
+                                                                 ComplianceLevels complianceLevels)
+    : _chart(new QChart),
+      _pointInfo(std::make_unique<PointInfoCard>()),
+      _xAxis(new QDateTimeAxis),
       _yAxis(new QValueAxis),
       _colourAxis(new QColorAxis),
       _line(new QLineSeries),
@@ -10,8 +12,8 @@ PollutantContaminationGraphBase::PollutantContaminationGraphBase(const QString &
       _mediumPointScatter(new QScatterSeries),
       _highPointScatter(new QScatterSeries),
       _complianceLevels(std::move(complianceLevels)) {
-  auto layout = new QHBoxLayout;
-  
+  _layout = new QHBoxLayout;
+
   _chart->setTitle(title);
 
   _chart->createDefaultAxes();
@@ -81,9 +83,10 @@ PollutantContaminationGraphBase::PollutantContaminationGraphBase(const QString &
   _view = new QChartView(_chart);
   _view->setRenderHint(QPainter::Antialiasing);
 
-  layout->addWidget(_view);
+  _layout->addWidget(_view);
+  _layout->addWidget(_pointInfo.get());
 
-  setLayout(layout);
+  setLayout(_layout);
 }
 
 void PollutantContaminationGraphBase::updateGradient(Range<qreal> range) {
@@ -111,21 +114,17 @@ void PollutantContaminationGraphBase::addPoint(const PollutantContaminationPoint
   }
 }
 
-void PollutantContaminationGraphBase::addPoints(const std::vector<PollutantContaminationPoint>& points)
-{
-  for(const auto& point : points)
-  {
+void PollutantContaminationGraphBase::addPoints(const std::vector<PollutantContaminationPoint>& points) {
+  for (const auto& point : points) {
     addPoint(point);
   }
 }
 
-void PollutantContaminationGraphBase::onPointClicked(const QPointF& point)
-{
-  PollutantContaminationPoint measurement
-  {
-    .time = QDateTime::fromMSecsSinceEpoch(point.x()),
-    .concentration = point.y()
-  };
+void PollutantContaminationGraphBase::onPointClicked(const QPointF& point) {
+  PollutantContaminationPoint measurement{.time = QDateTime::fromMSecsSinceEpoch(point.x()),
+                                          .concentration = point.y()};
 
-  // Display
+  auto pointInfoCard = new PointInfoCard(&measurement);
+  _layout->replaceWidget(_pointInfo.get(), pointInfoCard);
+  _pointInfo.reset(pointInfoCard);
 }
