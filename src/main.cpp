@@ -1,6 +1,3 @@
-#include "application.hpp"
+#include "core/application.hpp"
 
-int main(int argc, char** argv)
-{
-    return Application(argc, argv).exec();
-}
+int main(int argc, char** argv) { return Application(argc, argv).exec(); }
