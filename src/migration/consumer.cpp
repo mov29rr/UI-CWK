@@ -14,6 +14,7 @@ void Consumer::run() {
     CSVRow row;
 
     if (!m_queue.pop(row)) {
+      insertMeasurement();
       return;
     }
 

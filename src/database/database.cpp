@@ -18,11 +18,37 @@ bool Database::isOpen() const { return m_db.isOpen(); }
 void Database::initDatabase() {
   {
     QSqlQuery query(m_db);
-    query.prepare(
-        "SELECT 'DROP TABLE IF EXISTS \"' || name || '\";' "
-        "FROM sqlite_master "
-        "WHERE type = 'table';");
-    assert(query.exec() && "Failed to drop all table");
+
+    query.prepare("SELECT name FROM sqlite_master WHERE type = 'table';");
+    if (!query.exec()) {
+      qDebug() << "Failed get all table name:" << query.lastError().text();
+      assert(query.exec() && "Failed get all table name");
+    }
+
+    std::vector<QString> tableName;
+    while (query.next()) {
+      tableName.push_back(query.value(0).toString());
+    }
+
+    for (auto table : tableName) {
+      query.prepare(QString("DROP TABLE IF EXISTS \"%1\";").arg(table));
+      if (!query.exec()) {
+        qDebug() << "Failed to drop all table:" << tableName << query.lastError().text();
+        assert(query.exec() && "Failed to drop all table");
+      }
+    }
+
+    // Step 2: Loop over the tables and drop each one
+    while (query.next()) {
+      QString tableName = query.value(0).toString();
+      // Step 3: Construct and execute the DROP statement for each table
+      QSqlQuery dropQuery(m_db);
+      dropQuery.prepare(QString("DROP TABLE IF EXISTS \"%1\";").arg(tableName));
+      if (!dropQuery.exec()) {
+        qDebug() << "Failed to drop all table:" << tableName << dropQuery.lastError().text();
+        assert(query.exec() && "Failed to drop all table");
+      }
+    }
   }
   {
     QSqlQuery query(m_db);
