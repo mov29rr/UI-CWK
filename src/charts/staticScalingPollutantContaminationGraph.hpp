@@ -3,12 +3,12 @@
 #include <QtCharts>
 #include <ranges>
 
-#include "baseChart.hpp"
+#include "pollutantContaminationGraphBase.hpp"
 
 /**
- * The pollutant contamination graph chart class.
+ * The static scaling pollutant contamination graph chart class.
  */
-class PollutantContaminationGraph : public BaseChart {
+class StaticScalingPollutantContaminationGraph : public PollutantContaminationGraphBase {
  public:
   /**
    * Constructs the graph.
@@ -19,11 +19,11 @@ class PollutantContaminationGraph : public BaseChart {
    * @param complianceLevels the compliance levels.
    * @param units the concentration units.
    * @param points the point data to add to the graph (optional, can add later using
-   * PollutantContaminationGraph::addPoints).
+   * StaticScalingPollutantContaminationGraph::addPoints).
    */
-  PollutantContaminationGraph(const QString& title, Range<QDateTime> timeRange, Range<qreal> concentrationRange,
-                              ComplianceLevels complianceLevels, const QString& units,
-                              const std::vector<Point>& points = {});
+  StaticScalingPollutantContaminationGraph(const QString& title, Range<QDateTime> timeRange,
+                                           Range<qreal> concentrationRange, ComplianceLevels complianceLevels,
+                                           const QString& units, const std::vector<PollutantContaminationPoint>& points = {});
 
   /**
    * Sets the x-axis time range.
@@ -37,11 +37,4 @@ class PollutantContaminationGraph : public BaseChart {
    * @param range the y-axis concentration range to set to.
    */
   void setConcentrationRange(Range<qreal> range);
-
-  /**
-   * Adds points to the graph.
-   *
-   * @param points the points to add to the graph.
-   */
-  void addPoints(const std::vector<Point>& points) override;
 };

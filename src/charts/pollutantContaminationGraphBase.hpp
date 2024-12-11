@@ -40,22 +40,17 @@ struct ComplianceLevels
 	veryHigh;   	///< Very high compliance level
 };
 
+struct PollutantContaminationPoint
+{
+	QDateTime time;
+	qreal concentration;
+};
+
 /**
  * The base chart.
  */
-class BaseChart : public QChart
+class PollutantContaminationGraphBase : public QChart
 {
-public:
-  	/**
-  	 * Describes an individual point on the graph.
-  	 */
-  	struct Point
-  	{
-		/// The point time
-		QDateTime time;
-		/// The point concentration
-		qreal concentration;
-  	};
 protected:
   	QChartView* _view;
 
@@ -71,15 +66,13 @@ public:
   	/**
   	 * Constructs the graph.
   	 *
-  	 * @param title the graph title.
-  	 * @param timeRange the x-axis time range.
-  	 * @param concentrationRange the y-axis concentration range.
+  	 * @param title the graph title^ y-axis concentration range.
   	 * @param complianceLevels the compliance levels.
   	 * @param units the concentration units.
   	 * @param points the point data to add to the graph (optional, can add later using
   	 * BaseChart::addPoints).
   	 */
-  	BaseChart(const QString& title, ComplianceLevels complianceLevels);
+  	PollutantContaminationGraphBase(const QString& title, ComplianceLevels complianceLevels);
 
   	/**
   	 * Returns a pointer to the chart view.
@@ -94,12 +87,18 @@ public:
   	 */
   	inline const QChartView* view() const { return _view; }
 
+	/**
+	 * Adds an individual point to the graph.
+	 * 
+	 * @param point the point to add to the graph.
+	 */
+	virtual void addPoint(const PollutantContaminationPoint& point);
   	/**
   	 * Adds points to the graph.
-  	 *updateGradient(concentrationRange.min, concentrationRange.max);
+  	 * 
   	 * @param points the points to add to the graph.
   	 */
-  	virtual void addPoints(const std::vector<Point>& points) = 0;
+  	void addPoints(const std::vector<PollutantContaminationPoint>& points);
 protected:
 	void updateGradient(Range<qreal> range);
 };

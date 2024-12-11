@@ -2,7 +2,7 @@
 
 #include <unordered_map>
 
-#include "charts/pollutantContaminationGraph.hpp"
+#include "charts/staticScalingPollutantContaminationGraph.hpp"
 #include "database/dbConnection.hpp"
 #include "page.hpp"
 
@@ -28,7 +28,7 @@ class PersistentOrganicPollutantsPage : public Page {
   DbConnection _db;
   std::vector<PcbDeterminand> _pcbs;
 
-  std::unique_ptr<PollutantContaminationGraph> _graph;
+  std::unique_ptr<StaticScalingPollutantContaminationGraph> _graph;
 
   QComboBox* _pcbSelector;
   QDateEdit *_startDateSelector, *_endDateSelector;

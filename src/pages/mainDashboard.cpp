@@ -13,7 +13,7 @@ MainDashboardPage::MainDashboardPage(QListWidget* pageList, QStackedWidget* page
     for(int i = 0; i < pages.size(); ++i)
     {
         auto card = new PageOverviewCard(grid, pageStack, pages[i]);
-        auto row = i % 2 ? row2 : row1;
+        auto row = i / 2 ? row2 : row1;
         
         row->addWidget(card);
 

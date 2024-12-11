@@ -1,6 +1,6 @@
-#include "baseChart.hpp"
+#include "pollutantContaminationGraphBase.hpp"
 
-BaseChart::BaseChart(const QString &title, ComplianceLevels complianceLevels)
+PollutantContaminationGraphBase::PollutantContaminationGraphBase(const QString &title, ComplianceLevels complianceLevels)
     : _xAxis(new QDateTimeAxis),
       _yAxis(new QValueAxis),
       _colourAxis(new QColorAxis),
@@ -75,7 +75,7 @@ BaseChart::BaseChart(const QString &title, ComplianceLevels complianceLevels)
   _view->setRenderHint(QPainter::Antialiasing);
 }
 
-void BaseChart::updateGradient(Range<qreal> range) {
+void PollutantContaminationGraphBase::updateGradient(Range<qreal> range) {
   const qreal delta = range.max - range.min;
 
   auto gradient = new QLinearGradient(QPointF(0, 0), QPointF(0, 1));
@@ -84,4 +84,26 @@ void BaseChart::updateGradient(Range<qreal> range) {
   gradient->setColorAt(qBound(0.0, _complianceLevels.veryLow / delta, 1.0), GREEN);
 
   _colourAxis->setGradient(*gradient);
+}
+
+void PollutantContaminationGraphBase::addPoint(const PollutantContaminationPoint& point) {
+  qint64 msSinceEpoch = point.time.toMSecsSinceEpoch();
+
+  _line->append(msSinceEpoch, point.concentration);
+
+  if (point.concentration <= _complianceLevels.low) {
+    _lowPointScatter->append(msSinceEpoch, point.concentration);
+  } else if (_complianceLevels.low <= point.concentration && point.concentration <= _complianceLevels.high) {
+    _mediumPointScatter->append(msSinceEpoch, point.concentration);
+  } else if (point.concentration >= _complianceLevels.high) {
+    _highPointScatter->append(msSinceEpoch, point.concentration);
+  }
+}
+
+void PollutantContaminationGraphBase::addPoints(const std::vector<PollutantContaminationPoint>& points)
+{
+  for(const auto& point : points)
+  {
+    addPoint(point);
+  }
 }

@@ -66,12 +66,12 @@ void PersistentOrganicPollutantsPage::updateGraph() {
                                 {":startDate", QDateTime(QDate(2024, 1, 1), QTime(0, 0, 0))},
                                 {":endDate", QDateTime(QDate(2025, 1, 1), QTime(0, 0, 0))}});
 
-  std::vector<PollutantContaminationGraph::Point> measurements;
+  std::vector<PollutantContaminationPoint> measurements;
   for (const auto& record : records) {
     measurements.emplace_back(record.field("date").value().toDateTime(), record.field("result").value().toReal());
   }
 
-  auto graph = new PollutantContaminationGraph("Persistent Organic Pollutants", {startDate, endDate}, {0, 30},
+  auto graph = new StaticScalingPollutantContaminationGraph("Persistent Organic Pollutants", {startDate, endDate}, {0, 30},
                                                ComplianceLevels{.veryLow = 2, .low = 3, .high = 6, .veryHigh = 8},
                                                pcb.units, measurements);
 
