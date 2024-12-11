@@ -81,9 +81,6 @@ void ComplianceDashboardPage::setupUI() {
   // Summary Cards
   cardsLayout = new QHBoxLayout();
 
-  WaterDataset dataset;
-  std::vector<PollutantSample> pollutantSamples = dataset.loadPollutantSamples("../temp/pollutants.csv", 10);
-
   for (int i = 0; i < 4; ++i) {  // Only first 4 rows
     summaryCards[i] = new QFrame();
     summaryCards[i]->setFrameShape(QFrame::StyledPanel);
