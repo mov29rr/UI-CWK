@@ -37,6 +37,8 @@ void ComplianceDashboardPage::onMount(const QString hash) {
 
       pollutantFilter->addItem(pollutant.label, query.value("ID").toUInt());
       m_pollutants[query.value("ID").toUInt()] = pollutant;
+
+      i++;
     }
 
     if (i < 4) {
@@ -84,7 +86,8 @@ void ComplianceDashboardPage::setupUI() {
   for (int i = 0; i < 4; ++i) {  // Only first 4 rows
     summaryCards[i] = new QFrame();
     summaryCards[i]->setFrameShape(QFrame::StyledPanel);
-    summaryCards[i]->setStyleSheet("background-color: #f2f2f2; border: 1px solid #d9d9d9; padding: 10px;");
+    summaryCards[i]->setStyleSheet("border: 1px solid #d9d9d9; padding: 10px;");
+    // summaryCards[i]->setStyleSheet("background-color: #f2f2f2; border: 1px solid #d9d9d9; padding: 10px;");
     summaryCards[i]->setMinimumHeight(200);
     summaryCards[i]->setMinimumWidth(400);
 
@@ -101,6 +104,7 @@ void ComplianceDashboardPage::setupUI() {
     summaryCards[i]->setLayout(cardLayout);
     cardsLayout->addWidget(summaryCards[i]);
   }
+  // m_cards[0].title.setText("Updated Title");
 
   mainLayout->addLayout(cardsLayout);
 
