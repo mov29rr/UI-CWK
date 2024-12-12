@@ -1,6 +1,7 @@
 #include "page.hpp"
 
-#include <iostream>
+#include <QPushButton>
+
 Page::Page(const char* title) : title(title), _layout(new QVBoxLayout), content(new QVBoxLayout) {
   // Header
   auto header = new QWidget;
@@ -31,7 +32,12 @@ Page::Page(const char* title) : title(title), _layout(new QVBoxLayout), content(
     link->setOpenExternalLinks(true);
   }
 
+  auto helpButton = new QPushButton(tr("Help"));
+  helpButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+
   footerLayout->addWidget(dataLink);
+  footerLayout->addStretch();
+  footerLayout->addWidget(helpButton);
 
   footer->setLayout(footerLayout);
 
