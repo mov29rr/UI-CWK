@@ -15,12 +15,11 @@ qt_standard_project_setup()
 file(GLOB_RECURSE SRC_FILES "src/**")
 list(FILTER SRC_FILES EXCLUDE REGEX "^.*/main\\.cpp$")
 
-qt_add_executable(app src/main.cpp)
+qt_add_executable(WaterQualityInspector src/main.cpp)
 
-target_sources(app PRIVATE
+target_sources(WaterQualityInspector PRIVATE
 ${SRC_FILES}
 )
-
 
 set(TRANSLATION_FILES
     translations/waterQuality_es.ts
@@ -29,15 +28,15 @@ set(TRANSLATION_FILES
     translations/waterQuality_en.ts
 )
 
-qt_add_translations(app TS_FILES ${TRANSLATION_FILES})
+qt_add_translations(WaterQualityInspector TS_FILES ${TRANSLATION_FILES})
 
-include_directories(app PUBLIC "${CMAKE_SOURCE_DIR}/src")
+include_directories(WaterQualityInspector PUBLIC "${CMAKE_SOURCE_DIR}/src")
 
 add_custom_target(symlink_stylesheets ALL COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_SOURCE_DIR}/stylesheets" "${CMAKE_BINARY_DIR}/stylesheets")
 
-target_link_libraries(app PRIVATE Qt6::Widgets Qt6::Charts Qt6::Sql)
+target_link_libraries(WaterQualityInspector PRIVATE Qt6::Widgets Qt6::Charts Qt6::Sql)
 
-set_target_properties(app PROPERTIES
+set_target_properties(WaterQualityInspector PROPERTIES
     WIN32_EXECUTABLE ON
     MACOSX_BUNDLE OFF
 )
