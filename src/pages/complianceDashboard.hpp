@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QComboBox>
+#include <QDateTime>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMainWindow>
@@ -71,7 +72,7 @@ class ComplianceDashboardPage : public Page {
   QVBoxLayout *mainLayout;
   QHBoxLayout *filtersLayout;
   QHBoxLayout *contentLayout;
-  QHBoxLayout *cardsLayout;
+  QGridLayout *cardsLayout;
   QTableWidget *detailedTable;
   QComboBox *yearFilter;
   QComboBox *locationFilter;
@@ -81,7 +82,6 @@ class ComplianceDashboardPage : public Page {
   QTextEdit *importantInfo;
   QLabel *footer;
   QFrame *summaryCards[4];
-  QLabel *header;
 
   int m_offset = 0;
 

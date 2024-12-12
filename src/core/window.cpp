@@ -20,8 +20,8 @@ Window::Window() {
 
   _sidebar->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
 
-  std::vector<Page*> pages{new PollutantOverviewPage, new PersistentOrganicPollutantsPage,
-                           new FlourinatedCompoundsPage};
+  std::vector<Page*> pages{new PollutantOverviewPage, new PersistentOrganicPollutantsPage, new FlourinatedCompoundsPage,
+                           new ComplianceDashboardPage};
 
   auto mainDashboard = new MainDashboardPage(_sidebar, _content, pages);
 

@@ -1,6 +1,10 @@
 #pragma once
 
-#include "core/window.hpp"
+#include <QLabel>
+#include <QStackedWidget>
+#include <QString>
+#include <QVBoxLayout>
+#include <QWidget>
 
 /**
  * Abstract base class for pages within the app

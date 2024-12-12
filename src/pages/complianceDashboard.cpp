@@ -74,37 +74,50 @@ void ComplianceDashboardPage::setupUI() {
   centralWidget = new QWidget(this);
   mainLayout = new QVBoxLayout();
 
-  // Header
-  header = new QLabel("Compliance Dashboard");
-  header->setAlignment(Qt::AlignCenter);
-  header->setStyleSheet("font-size: 18px; font-weight: bold;");
-  mainLayout->addWidget(header);
-
   // Summary Cards
-  cardsLayout = new QHBoxLayout();
+  cardsLayout = new QGridLayout();
 
+  cardsLayout->setSpacing(10);
+  cardsLayout->setContentsMargins(10, 10, 10, 10);
+
+  mainLayout->setContentsMargins(10, 10, 10, 10);
+
+  const int maxColumns = 4;
   for (int i = 0; i < 4; ++i) {  // Only first 4 rows
+    int row = i / maxColumns;
+    int col = i % maxColumns;
+
     summaryCards[i] = new QFrame();
     summaryCards[i]->setFrameShape(QFrame::StyledPanel);
-    summaryCards[i]->setStyleSheet("border: 1px solid #d9d9d9; padding: 10px;");
-    // summaryCards[i]->setStyleSheet("background-color: #f2f2f2; border: 1px solid #d9d9d9; padding: 10px;");
+    summaryCards[i]->setStyleSheet("border: 1px solid #d9d9d9;");
     summaryCards[i]->setMinimumHeight(200);
-    summaryCards[i]->setMinimumWidth(400);
+    summaryCards[i]->setMinimumWidth(150);
+    summaryCards[i]->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+    m_cards[i].title.setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+    m_cards[i].detail.setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+    m_cards[i].detail.setStyleSheet("padding: 10px;");
 
     QVBoxLayout* cardLayout = new QVBoxLayout();
+
+    m_cards[i].title.setStyleSheet("font-size: 14px; font-weight: bold;");
 
     m_cards[i].title.setText("No Data");
     m_cards[i].detail.setText("No additional information available.");
 
     m_cards[i].title.setAlignment(Qt::AlignCenter);
+    m_cards[i].title.setWordWrap(true);
+    m_cards[i].title.setMaximumHeight(50);
+
     m_cards[i].detail.setAlignment(Qt::AlignLeft);
+    m_cards[i].detail.setWordWrap(true);
+    m_cards[i].detail.setMaximumHeight(120);
+
     cardLayout->addWidget(&m_cards[i].title);
     cardLayout->addWidget(&m_cards[i].detail);
 
     summaryCards[i]->setLayout(cardLayout);
-    cardsLayout->addWidget(summaryCards[i]);
+    cardsLayout->addWidget(summaryCards[i], row, col);
   }
-  // m_cards[0].title.setText("Updated Title");
 
   mainLayout->addLayout(cardsLayout);
 

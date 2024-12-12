@@ -1,3 +1,5 @@
+#pragma once
+
 #include "charts/pollutantContaminationGraphBase.hpp"
 
 class ComplianceDial : public QWidget {
