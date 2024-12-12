@@ -17,8 +17,6 @@ class Page : public QWidget {
  protected:
   /// The page content layout
   QVBoxLayout* content;
-  // Menu bar
-  QMenuBar* menuBar;
 
   QString _hash;
 
@@ -39,19 +37,9 @@ class Page : public QWidget {
    */
   Page(const char* title);
 
-  /**
-   * Create the menu bar to support translation
-   */
-  void createMenuBar();
-
-  /**
-   * Allows for translation of page to chosen language
-   */
-  void changeLanguage(const QString& language);
-
   virtual void onMount(const QString hash) {};
 
-private:
+ private:
   virtual QWidget* overview() { return new QWidget; }
 
   friend class PageOverviewCard;

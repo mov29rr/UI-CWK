@@ -32,6 +32,31 @@ class MainWindow : public QMainWindow {
     connect(openAction, &QAction::triggered, this, &MainWindow::openFile);
     fileMenu->addAction(openAction);
 
+    /**
+     * Create the menu to support translation
+     */
+    QMenu* languageMenu = menuBar()->addMenu(tr("Language"));
+    QAction* esAction = new QAction(tr("es"), this);
+    // esAction->setStatusTip(tr("Translate this page to Spanish"));
+    connect(esAction, &QAction::triggered, this, [this]() { changeLanguage("es"); });
+
+    QAction* frAction = new QAction(tr("fr"), this);
+    // frAction->setStatusTip(tr("Translate this page to French"));
+    connect(frAction, &QAction::triggered, this, [this]() { changeLanguage("fr"); });
+
+    QAction* deAction = new QAction(tr("de"), this);
+    // frAction->setStatusTip(tr("Translate this page to German"));
+    connect(frAction, &QAction::triggered, this, [this]() { changeLanguage("de"); });
+
+    QAction* en_GBaction = new QAction(tr("en_GB"), this);
+    // en_GBaction->setStatusTip(tr("Translate this page to British English"));
+    connect(en_GBaction, &QAction::triggered, this, [this]() { changeLanguage("en_GB"); });
+
+    languageMenu->addAction(en_GBaction);
+    languageMenu->addAction(esAction);
+    languageMenu->addAction(frAction);
+    languageMenu->addAction(deAction);
+
     QString exeDir = QCoreApplication::applicationDirPath();
 
     qDebug() << "executable path" << exeDir;
@@ -53,6 +78,31 @@ class MainWindow : public QMainWindow {
 
     setCentralWidget(_window.get());
   }
+
+  /**
+   * Allows for translation of page to chosen language
+   */
+  void changeLanguage(const QString& language) {
+    QTranslator trn;
+
+    if (language == "es") {
+      if (trn.load("translations/waterQuality_es.qm", ":/i18n")) {
+        qApp->installTranslator(&trn);
+      }
+    } else if (language == "fr") {
+      if (trn.load("translations/waterQuality_fr.qm", ":/i18n")) {
+        qApp->installTranslator(&trn);
+      }
+    } else if (language == "de") {
+      if (trn.load("translations/waterQuality_de.qm", ":/i18n")) {
+        qApp->installTranslator(&trn);
+      }
+    } else if (language == "en_GB") {
+      if (trn.load("translations/waterQuality_en.qm", ":/i18n")) {
+        qApp->installTranslator(&trn);
+      }
+    }
+  };
 
  private:
   QString generateRandomHash() const {
