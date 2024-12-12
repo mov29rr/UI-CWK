@@ -8,6 +8,11 @@ ComplianceDashboardPage::ComplianceDashboardPage(QWidget* parent)
       detailedTable(new QTableWidget(0, 6)) {
   setupUI();
 
+  _overviewPlaceholder = new QWidget;
+  _overviewLayout = new QVBoxLayout;
+
+  _overviewPlaceholder->setLayout(_overviewLayout);
+
   connect(detailedTable->verticalScrollBar(), &QScrollBar::valueChanged, this, &ComplianceDashboardPage::onScroll);
 }
 
@@ -324,7 +329,8 @@ void ComplianceDashboardPage::applyFilters() {
   // detailedTable->setRowCount(m_measurements.size());
 
   // Initialize statistics counters
-  int totalSamples = 0, missingDataCount = 0, compliantSamples = 0, mediumSamples = 0, nonCompliantSamples = 0;
+  int totalSamples = 0, missingDataCount = 0;
+  compliantSamples = 0, mediumSamples = 0, nonCompliantSamples = 0;
   QString bestLocation, worstLocation, bestYear, worstYear, bestPollutant, worstPollutant;
   double bestLocationPerformance = -1, worstLocationPerformance = std::numeric_limits<double>::max();
   double bestYearPerformance = -1, worstYearPerformance = std::numeric_limits<double>::max();
@@ -435,4 +441,14 @@ void ComplianceDashboardPage::applyFilters() {
   // Call populateStats to display the calculated statistics
   populateStats(bestLocation, worstLocation, bestYear, worstYear, bestPollutant, worstPollutant, totalSamples,
                 missingDataCount, compliantSamples, mediumSamples, nonCompliantSamples);
+
+// TODO: Remove existing
+  _overviewChart.reset(new ComplianceOverviewChart(compliantSamples, mediumSamples, nonCompliantSamples));
+
+  _overviewLayout->addWidget(_overviewChart.get());
+}
+
+QWidget* ComplianceDashboardPage::overview()
+{
+  return _overviewPlaceholder;
 }

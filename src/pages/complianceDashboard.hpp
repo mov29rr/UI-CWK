@@ -16,9 +16,11 @@
 #include <QVBoxLayout>
 #include <iostream>
 #include <string>
+#include <memory>
 #include <unordered_map>
 
 #include "pages/page.hpp"
+#include "charts/complianceOverviewChart.hpp"
 
 const int ROW_LIMIT = 200;
 
@@ -83,7 +85,15 @@ class ComplianceDashboardPage : public Page {
   QLabel *footer;
   QFrame *summaryCards[4];
 
+  QWidget* _overviewPlaceholder;
+  QVBoxLayout* _overviewLayout;
+  std::unique_ptr<ComplianceOverviewChart> _overviewChart;
+
+  int compliantSamples = 0, mediumSamples = 0, nonCompliantSamples = 0;
+
   int m_offset = 0;
+
+  QWidget* overview() override;
 
  protected slots:
   void onScroll(int value) {
