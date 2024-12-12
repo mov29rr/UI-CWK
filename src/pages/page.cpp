@@ -7,7 +7,7 @@ Page::Page(const char* title) : title(title), _layout(new QVBoxLayout), content(
   auto headerLayout = new QHBoxLayout;
   header->setObjectName("header");
 
-  auto headerTitle = new QLabel(title);
+  auto headerTitle = new QLabel(tr(title));
   headerLayout->addWidget(headerTitle);
   headerLayout->setAlignment(headerTitle, Qt::AlignCenter);
 
@@ -18,8 +18,20 @@ Page::Page(const char* title) : title(title), _layout(new QVBoxLayout), content(
   auto footerLayout = new QHBoxLayout;
   footer->setObjectName("footer");
 
-  auto footerText = new QLabel("TODO: Footer text");
-  footerLayout->addWidget(footerText);
+  // auto footerText = new QLabel("Data taken from: ");
+  // footerLayout->addWidget(footerText);
+
+  auto dataLink = new QLabel(
+      "Data taken from: <a href='https://environment.data.gov.uk/water-quality/view/download'>Gov Website</a>");
+
+  // Interaction with links
+  for (auto link : {dataLink}) {
+    link->setTextFormat(Qt::RichText);
+    link->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    link->setOpenExternalLinks(true);
+  }
+
+  footerLayout->addWidget(dataLink);
 
   footer->setLayout(footerLayout);
 

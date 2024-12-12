@@ -6,8 +6,10 @@
 
 QListWidget#sidebar
 {
-    background: #0A97B0;
+    background: #A3BFA5;
     outline: none;
+    font-size: 16px;
+    font-weight: bold;
 }
 QListWidget#sidebar::item
 {
@@ -16,7 +18,7 @@ QListWidget#sidebar::item
 }
 QListWidget#sidebar::item:selected
 {
-    background: #0A5EB0;
+    background: #78a178;
     outline: none;
     color: black;
 }
@@ -38,11 +40,11 @@ QListWidget#sidebar::item:selected
 
 #card
 {
-    background-color: #5A6D3E;
+    background-color: #c9c8cc;
 }
 #card > #title
 {
     font-size: 16px;
     font-weight: bold;
-    color: white;
+    color: black;
 }
