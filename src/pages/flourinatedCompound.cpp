@@ -1,5 +1,7 @@
 #include "flourinatedCompound.hpp"
 
+#include "charts/complianceDial.hpp"
+
 FlourinatedCompoundsPage::FlourinatedCompoundsPage() : Page("Flourinated Compounds Page") {
   QVBoxLayout* filterWrapper = new QVBoxLayout;
 
@@ -29,14 +31,9 @@ FlourinatedCompoundsPage::FlourinatedCompoundsPage() : Page("Flourinated Compoun
   connect(m_site_select, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
           &FlourinatedCompoundsPage::onSiteChange);
 
-  // m_chart->setTitle("Date vs Integer Chart");
-  m_chart = new AutoScaleDateFLoatChart("florinated compounds",
-                                        ComplianceLevels{.veryLow = 2, .low = 3, .high = 6, .veryHigh = 8});
+  m_chart = new AutoScalingPollutantContaminationGraph("florinated compounds", _complianceLevels);
 
-  m_chart_view = new QChartView(m_chart, this);
-  m_chart_view->setRenderHint(QPainter::Antialiasing);
-
-  content->addWidget(m_chart_view);
+  content->addWidget(m_chart);
 }
 
 void FlourinatedCompoundsPage::onMount(const QString hash) {
@@ -105,6 +102,10 @@ void FlourinatedCompoundsPage::onSiteChange(int index) {
       "where d.SITE_ID = :site_id AND d.DETERMINAND_ID = :determinand_id LIMIT 10;");
   query.bindValue(":site_id", site_id);
   query.bindValue(":determinand_id", determinand_id);
+
+  std::vector<PollutantContaminationPoint> measurements;
+  measurements.reserve(10);
+
   if (query.exec()) {
     while (query.next()) {
       QString date = query.value("DATE").toString();
@@ -113,12 +114,23 @@ void FlourinatedCompoundsPage::onSiteChange(int index) {
       QDateTime dateTime = QDateTime::fromString(date, "yyyy-MM-ddThh:mm:ss");
 
       if (dateTime.isValid()) {
-        m_chart->addPoint(BaseChart::Point{dateTime, value});
+        measurements.emplace_back(dateTime, value);
       } else {
         qDebug() << "Invalid date format:" << date;
       }
     }
+
+    m_chart->addPoints(measurements);
+
+    _averageConcentration = std::accumulate(measurements.cbegin(), measurements.cend(), 0.0,
+                                            [](qreal sum, const PollutantContaminationPoint& measurement) {
+                                              return sum + measurement.concentration;
+                                            }) /
+                            measurements.size();
+
   } else {
     qDebug() << "Faild to get measurement:" << query.lastError().text();
   }
 }
+
+QWidget* FlourinatedCompoundsPage::overview() { return new ComplianceDial(_averageConcentration, {0, 10}, _complianceLevels); }

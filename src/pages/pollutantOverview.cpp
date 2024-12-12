@@ -1,5 +1,7 @@
 #include "pollutantOverview.hpp"
 
+#include <iostream>
+
 PollutantOverviewPage::PollutantOverviewPage() : Page("Pollutant Overview Page")
 {
   	// create searchbar

@@ -3,15 +3,15 @@
 #include <QtCharts>
 #include <ranges>
 
-#include "baseChart.hpp"
+#include "pollutantContaminationGraphBase.hpp"
 
 /**
- * The pollutant contamination graph chart class.
+ * The auto scaling pollutant contamination graph chart class.
  */
-class AutoScaleDateFLoatChart : public BaseChart {
+class AutoScalingPollutantContaminationGraph : public PollutantContaminationGraphBase {
  private:
   float m_top_padding = 0;
-  void updateAxis(const Point* point);
+  void updateAxis(const PollutantContaminationPoint& point);
 
  public:
   /**
@@ -23,23 +23,16 @@ class AutoScaleDateFLoatChart : public BaseChart {
    * @param complianceLevels the compliance levels.
    * @param units the concentration units.
    * @param points the point data to add to the graph (optional, can add later using
-   * AutoScaleDateFLoatChart::addPoints).
+   * AutoScalingPollutantContaminationGraph::addPoints).
    */
-  AutoScaleDateFLoatChart(const QString& title, ComplianceLevels complianceLevels,
-                          const std::vector<Point>& points = {});
+  AutoScalingPollutantContaminationGraph(const QString& title, ComplianceLevels complianceLevels,
+                          const std::vector<PollutantContaminationPoint>& points = {});
 
   void setUnit(const QString& units);
 
   void clear();
 
-  void addPoint(const Point& point);
-
   void setYTitle(const QString& title) { _yAxis->setTitleText(title); }
 
-  /**
-   * Adds points to the graph.
-   *
-   * @param points the points to add to the graph.
-   */
-  void addPoints(const std::vector<Point>& points) override;
+  void addPoint(const PollutantContaminationPoint& point) override;
 };

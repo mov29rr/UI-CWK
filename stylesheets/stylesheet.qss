@@ -1,7 +1,7 @@
 #body
 {
-    min-width: 600px;
-    min-height: 400px;
+    min-width: 900px;
+    min-height: 600px;
 }
 
 QListWidget#sidebar
@@ -34,4 +34,15 @@ QListWidget#sidebar::item:selected
 #footer
 {
     border-top: 1px solid grey;
+}
+
+#card
+{
+    background-color: #5A6D3E;
+}
+#card > #title
+{
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
 }

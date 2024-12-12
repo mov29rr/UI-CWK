@@ -6,7 +6,7 @@
 #include <QSqlQuery>
 #include <QVBoxLayout>
 
-#include "charts/autoScaleDateFLoatChart.hpp"
+#include "charts/autoScalingPollutantContaminationGraph.hpp"
 #include "page.hpp"
 
 struct CompoundType {
@@ -27,8 +27,11 @@ class FlourinatedCompoundsPage : public Page {
   QComboBox *m_compound_select = new QComboBox(this);
   QComboBox *m_site_select = new QComboBox(this);
 
-  AutoScaleDateFLoatChart *m_chart = nullptr;
+  AutoScalingPollutantContaminationGraph *m_chart = nullptr;
   QChartView *m_chart_view = nullptr;
+
+  const ComplianceLevels _complianceLevels {.veryLow = 2, .low = 3, .high = 6, .veryHigh = 8};
+  qreal _averageConcentration = 0.0;
 
  public:
   /**
@@ -37,6 +40,9 @@ class FlourinatedCompoundsPage : public Page {
   FlourinatedCompoundsPage();
 
   void onMount(const QString hash) override;
+
+ private:
+  QWidget* overview() override;
 
  private slots:
   void onCompoundChange(int index);

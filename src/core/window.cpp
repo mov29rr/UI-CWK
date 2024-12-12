@@ -1,5 +1,10 @@
 #include "window.hpp"
 
+#include "pages/flourinatedCompound.hpp"
+#include "pages/mainDashboard.hpp"
+#include "pages/persistentOrganicPollutants.hpp"
+#include "pages/pollutantOverview.hpp"
+
 Window::Window() {
   setObjectName("body");
 
@@ -13,8 +18,14 @@ Window::Window() {
   _sidebar->setObjectName("sidebar");
   _content->setObjectName("content");
 
-  const std::vector<Page*> pages{new PollutantOverviewPage, new PersistentOrganicPollutantsPage,
-                                 new FlourinatedCompoundsPage, new ComplianceDashboardPage};
+  _sidebar->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+
+  std::vector<Page*> pages{new PollutantOverviewPage, new PersistentOrganicPollutantsPage,
+                           new FlourinatedCompoundsPage};
+
+  auto mainDashboard = new MainDashboardPage(_sidebar, _content, pages);
+
+  pages.insert(pages.begin(), mainDashboard);
 
   for (auto page : pages) {
     _content->addWidget(page);
@@ -59,4 +70,4 @@ void Window::onChangeDB(const QString hash) {
       customWidget->onMount(_hash);
     }
   }
-}
+};
