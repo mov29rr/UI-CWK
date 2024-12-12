@@ -1,6 +1,10 @@
 #pragma once
 
-#include "core/window.hpp"
+#include <QLabel>
+#include <QStackedWidget>
+#include <QString>
+#include <QVBoxLayout>
+#include <QWidget>
 
 /**
  * Abstract base class for pages within the app
@@ -20,15 +24,6 @@ class Page : public QWidget {
 
   QString _hash;
 
-  bool toMount(const QString hash) {
-    if (hash == _hash) {
-      return false;
-    }
-
-    _hash = hash;
-    return true;
-  }
-
  public:
   /**
    * Constructs the page
@@ -38,6 +33,15 @@ class Page : public QWidget {
   Page(const char* title);
 
   virtual void onMount(const QString hash) {};
+
+  bool toMount(const QString hash) {
+    if (hash == _hash) {
+      return false;
+    }
+
+    _hash = hash;
+    return true;
+  }
 
  private:
   virtual QWidget* overview() { return new QWidget; }

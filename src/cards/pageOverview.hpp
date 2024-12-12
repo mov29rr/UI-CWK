@@ -1,3 +1,6 @@
+#include <QLabel>
+#include <QMouseEvent>
+
 #include "pages/page.hpp"
 
 /**

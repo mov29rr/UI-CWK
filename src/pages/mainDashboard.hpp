@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QListWidget>
+
 #include "pages/page.hpp"
 
 /**

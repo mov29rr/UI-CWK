@@ -32,10 +32,6 @@ PersistentOrganicPollutantsPage::PersistentOrganicPollutantsPage()
 }
 
 void PersistentOrganicPollutantsPage::onMount(const QString hash) {
-  if (!toMount(hash)) {
-    return;
-  }
-
   auto records = _db.query(
       "SELECT DISTINCT ID, LABEL, UNIT FROM determinand "
       "WHERE LABEL LIKE \"PCB %\"");

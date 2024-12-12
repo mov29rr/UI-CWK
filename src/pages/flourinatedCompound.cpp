@@ -37,10 +37,6 @@ FlourinatedCompoundsPage::FlourinatedCompoundsPage() : Page("Flourinated Compoun
 }
 
 void FlourinatedCompoundsPage::onMount(const QString hash) {
-  if (!toMount(hash)) {
-    return;
-  }
-
   int compound_id = -1;
 
   QSqlQuery query;

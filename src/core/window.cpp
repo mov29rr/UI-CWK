@@ -1,9 +1,9 @@
 #include "window.hpp"
 
-#include "pages/mainDashboard.hpp"
-#include "pages/pollutantOverview.hpp"
-#include "pages/persistentOrganicPollutants.hpp"
 #include "pages/flourinatedCompound.hpp"
+#include "pages/mainDashboard.hpp"
+#include "pages/persistentOrganicPollutants.hpp"
+#include "pages/pollutantOverview.hpp"
 
 Window::Window() {
   setObjectName("body");
@@ -20,23 +20,18 @@ Window::Window() {
 
   _sidebar->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
 
-	std::vector<Page*> pages
-	{
-		new PollutantOverviewPage,
-		new PersistentOrganicPollutantsPage,
-		new FlourinatedCompoundsPage
-	};
+  std::vector<Page*> pages{new PollutantOverviewPage, new PersistentOrganicPollutantsPage, new FlourinatedCompoundsPage,
+                           new ComplianceDashboardPage};
 
-	auto mainDashboard = new MainDashboardPage(_sidebar, _content, pages);
+  auto mainDashboard = new MainDashboardPage(_sidebar, _content, pages);
 
-	pages.insert(pages.begin(), mainDashboard);
+  pages.insert(pages.begin(), mainDashboard);
 
-	for (auto page : pages)
-	{
-		_content->addWidget(page);
-		auto item = new QListWidgetItem(page->title);
-		_sidebar->addItem(item);
-	}
+  for (auto page : pages) {
+    _content->addWidget(page);
+    auto item = new QListWidgetItem(page->title);
+    _sidebar->addItem(item);
+  }
 
   if (!pages.empty()) {
     _sidebar->setCurrentRow(0);
@@ -52,7 +47,9 @@ Window::Window() {
       if (widget) {
         auto customWidget = qobject_cast<Page*>(widget);
         if (customWidget) {
-          customWidget->onMount(_hash);
+          if (customWidget->toMount(_hash)) {
+            customWidget->onMount(_hash);
+          }
         }
       }
     }

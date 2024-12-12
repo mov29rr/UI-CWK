@@ -1,5 +1,8 @@
 #pragma once
 
+#include <QLineEdit>
+#include <QTextBrowser>
+
 #include "page.hpp"
 
 /**

@@ -1,6 +1,10 @@
 #pragma once
 
-#include <QtWidgets>
+#include "pages/complianceDashboard.hpp"
+#include "pages/flourinatedCompound.hpp"
+#include "pages/page.hpp"
+#include "pages/persistentOrganicPollutants.hpp"
+#include "pages/pollutantOverview.hpp"
 
 /**
  * The main window class
