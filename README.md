@@ -37,4 +37,5 @@ Top level folders:
 # Known issues
 
 - Currently the main dashboard only displays overviews once the pages are clicked and the data is loaded, this means that before hand they are empty.
-- 
+- The points don't unselect when clicked elsewhere
+- Pollutants page doesn't show line graph data correctly
