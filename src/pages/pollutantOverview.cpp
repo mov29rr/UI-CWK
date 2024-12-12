@@ -4,6 +4,7 @@
 #include <QStringListModel>
 
 #include "database/dbConnection.hpp"
+#include "charts/complianceDial.hpp"
 
 void PollutantSearchHintModel::setFilter(const QString& text) {
   QSqlQuery query;
@@ -86,8 +87,18 @@ void PollutantOverviewPage::onSearch() {
     measurements.emplace_back(record.field("date").value().toDateTime(), record.field("result").value().toReal());
   }
 
+  _averageConcentration = std::accumulate(measurements.cbegin(), measurements.cend(), 0.0,
+                                          [](qreal sum, const PollutantContaminationPoint& measurement) {
+                                            return sum + measurement.concentration;
+                                          }) /
+                          measurements.size();
+
   _chart->addPoints(measurements);
 
   content->replaceWidget(_contentPlaceholder, _chart);
   _contentPlaceholder = _chart;
+}
+
+QWidget* PollutantOverviewPage::overview() {
+  return new ComplianceDial(_averageConcentration, {0, 10}, _complianceLevels);
 }

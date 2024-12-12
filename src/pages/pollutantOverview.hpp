@@ -25,6 +25,8 @@ class PollutantOverviewPage : public Page {
   QLineEdit* _searchField;
   AutoScalingPollutantContaminationGraph* _chart;
   QWidget* _contentPlaceholder;
+  
+  qreal _averageConcentration = 0.0;
 
   const ComplianceLevels _complianceLevels{.veryLow = 2, .low = 3, .high = 6, .veryHigh = 8};
 
@@ -35,8 +37,7 @@ class PollutantOverviewPage : public Page {
   PollutantOverviewPage();
 
  private:
-  // TODO
-  QWidget* overview() override { return new QWidget; }
+  QWidget* overview() override;
 
  private slots:
   void onSearch();
